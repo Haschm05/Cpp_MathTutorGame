@@ -272,13 +272,13 @@ int main() {
         correctAnswer = questions.at(i).at(4);
         attemptCount = questions.at(i).at(5); //? questions.at(i).at(5) : 0; // Safely access attempts
 
-        cout << " " << setw(2) << right << mathLevel << "     " << setw(3) << right << leftNum << " " << mathSymbol << " " << rightNum << " = " << correctAnswer << " ";
+        cout << " " << setw(2) << right << mathLevel << setw(8) << right << leftNum << " " << mathSymbol << " " << rightNum << " = " << correctAnswer << " ";
 
         if (attemptCount != 0) {
-            cout << "     " << attemptCount << " Attempt(s)" << endl;
+            cout << setw(13) << attemptCount << endl;
             totalCorrect ++;
         } else {
-            cout << "      Incorrect" << endl;
+            cout << setw(13) << "Incorrect" << endl;
             totalIncorrect ++;
         }
         totalQuestions ++;
