@@ -17,6 +17,9 @@ Description: A simple math tutor for elementary students. Adds the final summary
 
 using namespace std; // sets standard namespace
 
+//Vectors
+vector<vector<int>> questions;
+
 //Constants
 const int MAX_ATTEMPTS = 3; //Sets how many attempts per question
 const int LEVEL_RANGE_CHANGE = 10; //Sets how much the range changes per level
@@ -97,66 +100,45 @@ string IntroGetName() {
     return userName;
 }
 
-int GetEquation() {
+void PrintSummary() {
+    cout << "**************************************" << endl;
+    cout << "*           Summary Report           *" << endl;
+    cout << "**************************************" << endl;
+    cout << "Level:    Question:         Attempts: " << endl;
+    cout << "______    _________         _________ " << endl;
 
-    int leftNum = 0;
-    int rightNum = 0;
-    int currentRange = LEVEL_RANGE_CHANGE;
-    int temp = 0;
-    int mathType = 0;
-    int correctAnswer = 0;
-    char mathSymbol = '?';
+    int totalCorrect = 0, totalIncorrect = 0, totalQuestions = 0;
+    double averageCorrect = 0;
 
+    for (int i = 0; i < questions.size(); i++) {
+        int mathLevel = questions[i][0];
+        int leftNum = questions[i][1];
+        char mathSymbol = static_cast<char>(questions[i][2]);
+        int rightNum = questions[i][3];
+        int correctAnswer = questions[i][4];
+        int attemptCount = questions[i][5];
 
-    //Portion of code dedicated to random number generation
-    leftNum = (rand() % currentRange) + 1; //randomizes first number
-    rightNum = (rand() % currentRange) + 1; //randomizes second number
+        cout << setw(2) << right << mathLevel << "     " << setw(3) << right << leftNum << " "
+             << mathSymbol << " " << rightNum << " = " << correctAnswer << " ";
 
-    //enum to replace the mathType integer
-    enum mthType {MT_ADD, MT_SUB, MT_MUL, MT_DIV};
-    mthType questionType;
-
-    questionType = static_cast<mthType>(rand() % 4); //Randomizes question type
-
-    switch (questionType) {
-        // assigns math symbol
-        case MT_ADD:
-            mathSymbol = '+'; //assigns an addition problem
-        correctAnswer = leftNum + rightNum; // adds the numbers and stores correct answer
-        break;
-
-        case MT_SUB:
-            mathSymbol = '-'; //assigns a subtraction problem
-        // This is used to make sure the left number is larger than the right, preventing negative numbers.
-        if (leftNum < rightNum) {
-            temp = leftNum;
-            leftNum = rightNum;
-            rightNum = temp;
+        if (attemptCount != 0) {
+            cout << "     " << attemptCount << " Attempt(s)" << endl;
+            totalCorrect++;
+        } else {
+            cout << "      Incorrect" << endl;
+            totalIncorrect++;
         }
-        correctAnswer = leftNum - rightNum;
-        break;
-
-        case MT_MUL:
-            mathSymbol = '*'; //assigns a multiplication problem
-        correctAnswer = leftNum * rightNum;
-        break;
-
-        case MT_DIV:
-            mathSymbol = '/'; //assigns a division problem
-        // Following code makes sure division problem doesn't generate a fraction
-        correctAnswer = leftNum;
-        leftNum *= rightNum;
-        if (rightNum == 0) {
-            rightNum = 1;  // Avoid division by zero
-        }
-        break;
-
-        default: // This is here to catch any errors
-            cout << "Invalid question type: " << mathType << endl;
-        cout << "Contact RivJams or RileyTeeter about the error" << endl;
-        cout << "Program ended with a -1 error" << endl;
-        return -1;
+        totalQuestions++;
     }
+
+    averageCorrect = (static_cast<double>(totalCorrect) / totalQuestions) * 100;
+    cout << "\nTotal questions: " << totalQuestions << endl;
+    cout << "Total correct: " << totalCorrect << endl;
+    cout << "Total incorrect: " << totalIncorrect << endl;
+    cout << "Average correct: " << averageCorrect << "%" << endl;
+
+    cout << "\nThank you for playing Silly Math Tutor!" << endl;
+    cout << "Be sure to come back in the near future for more fun!" << endl;
 }
 
 int main() {
@@ -184,19 +166,62 @@ int main() {
     //Chars
     char mathSymbol = '?';
 
-    //Vectors
-    vector<vector<int>> questions;
-
     srand(time(0)); // Generates a unique seed so its random.
 
     //IntroArt();
     //IntroPun();
-    userName = IntroGetName();
+    //userName = IntroGetName();
 
-    do { //Beginning of central loop that repeats number generation and math problems
+        do { //Beginning of central loop that repeats number generation and math problems
 
-        GetEquation();
+        //Portion of code dedicated to random number generation
+        leftNum = (rand() % currentRange) + 1; //randomizes first number
+        rightNum = (rand() % currentRange) + 1; //randomizes second number
 
+        //enum to replace the mathType integer
+        enum mthType {MT_ADD, MT_SUB, MT_MUL, MT_DIV};
+        mthType questionType;
+
+        questionType = static_cast<mthType>(rand() % 4); //Randomizes question type
+
+        switch (questionType) {
+            // assigns math symbol
+            case MT_ADD:
+                mathSymbol = '+'; //assigns an addition problem
+            correctAnswer = leftNum + rightNum; // adds the numbers and stores correct answer
+            break;
+
+            case MT_SUB:
+                mathSymbol = '-'; //assigns a subtraction problem
+            // This is used to make sure the left number is larger than the right, preventing negative numbers.
+            if (leftNum < rightNum) {
+                temp = leftNum;
+                leftNum = rightNum;
+                rightNum = temp;
+            }
+            correctAnswer = leftNum - rightNum;
+            break;
+
+            case MT_MUL:
+                mathSymbol = '*'; //assigns a multiplication problem
+            correctAnswer = leftNum * rightNum;
+            break;
+
+            case MT_DIV:
+                mathSymbol = '/'; //assigns a division problem
+            // Following code makes sure division problem doesn't generate a fraction
+            correctAnswer = leftNum;
+            leftNum *= rightNum;
+            break;
+
+            default: // This is here to catch any errors
+                cout << "Invalid question type: " << mathType << endl;
+                cout << "Contact RivJams or RileyTeeter about the error" << endl;
+                cout << "Program ended with a -1 error" << endl;
+            return -1;
+        }
+
+        //*********************************************************************
 
         vector<int> row = {mathLevel, leftNum, mathSymbol, rightNum, correctAnswer};
 
@@ -282,55 +307,8 @@ int main() {
 
     while (userYN == "y" || userYN == "yes"); //Loop goes until userYN no longer equals "yes"
 
-    //*********************************************************************
 
-    //Outputs Vector for summary report
-    cout << "**************************************" << endl;
-    cout << "*           Summary Report           *" << endl;
-    cout << "**************************************" << endl;
-    cout << "Level:    Question:         Attempts: " << endl;
-    cout << "______    _________         _________ " << endl;
-
-    totalCorrect = 0;
-    totalIncorrect = 0;
-
-    //sets up the final outputs for summary
-    for (int i = 0; i < questions.size(); i++) {
-        mathLevel = questions.at(i).at(0);
-        leftNum = questions.at(i).at(1);
-        mathSymbol = static_cast<char>(questions.at(i).at(2)); // Change to MathType
-        rightNum = questions.at(i).at(3);
-        correctAnswer = questions.at(i).at(4);
-        attemptCount = questions.at(i).at(5); //? questions.at(i).at(5) : 0; // Safely access attempts
-
-        cout << " " << setw(2) << right << mathLevel << setw(8) << right << leftNum << " " << mathSymbol << " " << rightNum << " = " << correctAnswer << " ";
-
-        if (attemptCount != 0) {
-            cout << setw(13) << attemptCount << endl;
-            totalCorrect ++;
-        } else {
-            cout << setw(13) << "Incorrect" << endl;
-            totalIncorrect ++;
-        }
-        totalQuestions ++;
-    }
-
-    //Outputs the final summary after main program has ended
-    cout << endl;
-    averageCorrect = (static_cast<double>(totalCorrect) / totalQuestions) * 100;
-    cout << "Total questions: " << totalQuestions << endl;
-    cout << "Total correct: " << totalCorrect << endl;
-    cout << "Total incorrect: " << totalIncorrect << endl;
-    cout << "Average correct: " << averageCorrect << "%" << endl; // Use averageCorrect here
-
-    // End of program. Leave message to user. Couts break up the end message to display better in console.
-    cout << endl;
-    cout << "Thank you, " << userName << ", for playing Silly Math Tutor!" << endl;
-    cout << endl;
-    cout << "Be sure to come back in the near future" << endl;
-    cout << "for more updates, and most importantly," << endl; // promises future improvements, the next being Version 3
-    cout << "MORE FUN!" << endl;
-
+PrintSummary();
     return 0;
 
 }
