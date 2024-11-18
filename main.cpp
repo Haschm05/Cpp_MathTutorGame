@@ -1,11 +1,10 @@
-
-/**************************************************************************************
+/*
 Program: Math Tutor Version 3
-Programmers: Hayden Schmidt & River Wallerstedt
+Programmers: Hayden Schmidt & Jayden Kay
 Date: 10/22/24 *Last updated version
 Github URL: https://github.com/Haschm05/MTV4
 Description: A simple math tutor for elementary students. Adds the final summary.
-**************************************************************************************/
+*/
 
 #include <iostream> // required for couts & cins
 #include <cstdlib> // allows for randomizer
@@ -18,44 +17,12 @@ Description: A simple math tutor for elementary students. Adds the final summary
 
 using namespace std; // sets standard namespace
 
-int main() {
-    // Starting the main function
+//Constants
+const int MAX_ATTEMPTS = 3; //Sets how many attempts per question
+const int LEVEL_RANGE_CHANGE = 10; //Sets how much the range changes per level
 
-    //*********************************************************************
-
-    // Declares and initializes variables
-
-    //Constants
-    const int MAX_ATTEMPTS = 3; //Sets how many attempts per question
-    const int LEVEL_RANGE_CHANGE = 10; //Sets how much the range changes per level
-
-    //Integers
-    int leftNum = 0;
-    int rightNum = 0;
-    int mathType = 0;
-    int correctAnswer = 0;
-    int userAnswer = 0;
-    int temp = 0;
-    int totalCorrect = 0; //Counter for correct answers
-    int totalIncorrect = 0; //Counter for incorrect answers
-    int averageCorrect = 0;
-    int totalQuestions = 0;
-    int mathLevel = 1; //Starts user on level 1
-    int currentRange = LEVEL_RANGE_CHANGE; //Sets starting range at 10
-    int attemptCount = 0;
-
-    //Strings
-    string userYN = "?";
-    string userName = "unknown";
-
-    //Chars
-    char mathSymbol = '?';
-
-    //Vectors
-    vector<vector<int>> questions;
-
-    srand(time(0)); // Generates a unique seed so its random.
-
+//Intro
+void IntroArt() {
     //*********************************************************************
 
     // Set of cout statements to display the Silly Math ASCII art and welcome banner
@@ -69,11 +36,18 @@ int main() {
     cout << "            __/ /                       " << endl;
     cout << "           |___/                       " << endl;
     cout << "*******************************************" << endl;
-    cout << "*    Welcome to Silly Math Tutor V3 by    *" << endl;
+    cout << "*    Welcome to Silly Math Tutor V5 by    *" << endl;
     cout << "*         RivJams and Hayden         *" << endl;
     cout << "*******************************************" << endl;
     cout << endl;
 
+    return;
+}
+
+//Intro Pun
+void IntroPun() {
+    string userYN;
+    string userName;
     // Asks prompt whether to display the jokes or not
     cout << "Do you wanna hear some math puns? (y/n): ";
     cin >> userYN;
@@ -103,9 +77,15 @@ int main() {
     cout << "*******************************************" << endl;
     cout << endl;
 
+    getline(cin, userName); // Clears out leftover carriage return
+
+    return;
+}
+
+string IntroGetName() {
+    string userName = "0";
     // Beginning the interactive portion of the program
     cout << "Please enter your name to begin: ";
-    getline(cin, userName); // Clears out leftover carriage return
     getline(cin, userName); // Get user input for name
     cout << endl;
 
@@ -114,58 +94,109 @@ int main() {
     cout << endl;
     cout << "*******************************************" << endl;
 
-    //*********************************************************************
+    return userName;
+}
+
+int GetEquation() {
+
+    int leftNum = 0;
+    int rightNum = 0;
+    int currentRange = LEVEL_RANGE_CHANGE;
+    int temp = 0;
+    int mathType = 0;
+    int correctAnswer = 0;
+    char mathSymbol = '?';
+
+
+    //Portion of code dedicated to random number generation
+    leftNum = (rand() % currentRange) + 1; //randomizes first number
+    rightNum = (rand() % currentRange) + 1; //randomizes second number
+
+    //enum to replace the mathType integer
+    enum mthType {MT_ADD, MT_SUB, MT_MUL, MT_DIV};
+    mthType questionType;
+
+    questionType = static_cast<mthType>(rand() % 4); //Randomizes question type
+
+    switch (questionType) {
+        // assigns math symbol
+        case MT_ADD:
+            mathSymbol = '+'; //assigns an addition problem
+        correctAnswer = leftNum + rightNum; // adds the numbers and stores correct answer
+        break;
+
+        case MT_SUB:
+            mathSymbol = '-'; //assigns a subtraction problem
+        // This is used to make sure the left number is larger than the right, preventing negative numbers.
+        if (leftNum < rightNum) {
+            temp = leftNum;
+            leftNum = rightNum;
+            rightNum = temp;
+        }
+        correctAnswer = leftNum - rightNum;
+        break;
+
+        case MT_MUL:
+            mathSymbol = '*'; //assigns a multiplication problem
+        correctAnswer = leftNum * rightNum;
+        break;
+
+        case MT_DIV:
+            mathSymbol = '/'; //assigns a division problem
+        // Following code makes sure division problem doesn't generate a fraction
+        correctAnswer = leftNum;
+        leftNum *= rightNum;
+        if (rightNum == 0) {
+            rightNum = 1;  // Avoid division by zero
+        }
+        break;
+
+        default: // This is here to catch any errors
+            cout << "Invalid question type: " << mathType << endl;
+        cout << "Contact RivJams or RileyTeeter about the error" << endl;
+        cout << "Program ended with a -1 error" << endl;
+        return -1;
+    }
+}
+
+int main() {
+    // Starting the main function
+    // Declares and initializes variables
+    //Integers
+    int leftNum = 0;
+    int rightNum = 0;
+    int mathType = 0;
+    int correctAnswer = 0;
+    int userAnswer = 0;
+    int temp = 0;
+    int totalCorrect = 0; //Counter for correct answers
+    int totalIncorrect = 0; //Counter for incorrect answers
+    int averageCorrect = 0;
+    int totalQuestions = 0;
+    int mathLevel = 1; //Starts user on level 1
+    int currentRange = LEVEL_RANGE_CHANGE; //Sets starting range at 10
+    int attemptCount = 0;
+
+    //Strings
+    string userYN = "?";
+    string userName = "unknown";
+
+    //Chars
+    char mathSymbol = '?';
+
+    //Vectors
+    vector<vector<int>> questions;
+
+    srand(time(0)); // Generates a unique seed so its random.
+
+    //IntroArt();
+    //IntroPun();
+    userName = IntroGetName();
 
     do { //Beginning of central loop that repeats number generation and math problems
 
-        //Portion of code dedicated to random number generation
-        leftNum = (rand() % currentRange) + 1; //randomizes first number
-        rightNum = (rand() % currentRange) + 1; //randomizes second number
+        GetEquation();
 
-        //enum to replace the mathType integer
-        enum mthType {MT_ADD, MT_SUB, MT_MUL, MT_DIV};
-        mthType questionType;
-
-        questionType = static_cast<mthType>(rand() % 4); //Randomizes question type
-
-        switch (questionType) {
-            // assigns math symbol
-            case MT_ADD:
-                mathSymbol = '+'; //assigns an addition problem
-            correctAnswer = leftNum + rightNum; // adds the numbers and stores correct answer
-            break;
-
-            case MT_SUB:
-                mathSymbol = '-'; //assigns a subtraction problem
-            // This is used to make sure the left number is larger than the right, preventing negative numbers.
-            if (leftNum < rightNum) {
-                temp = leftNum;
-                leftNum = rightNum;
-                rightNum = temp;
-            }
-            correctAnswer = leftNum - rightNum;
-            break;
-
-            case MT_MUL:
-                mathSymbol = '*'; //assigns a multiplication problem
-            correctAnswer = leftNum * rightNum;
-            break;
-
-            case MT_DIV:
-                mathSymbol = '/'; //assigns a division problem
-            // Following code makes sure division problem doesn't generate a fraction
-            correctAnswer = leftNum;
-            leftNum *= rightNum;
-            break;
-
-            default: // This is here to catch any errors
-                cout << "Invalid question type: " << mathType << endl;
-                cout << "Contact RivJams or RileyTeeter about the error" << endl;
-                cout << "Program ended with a -1 error" << endl;
-            return -1;
-        }
-
-        //*********************************************************************
 
         vector<int> row = {mathLevel, leftNum, mathSymbol, rightNum, correctAnswer};
 
