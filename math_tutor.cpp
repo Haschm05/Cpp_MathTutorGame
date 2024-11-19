@@ -105,7 +105,9 @@ void AskQuestion(int& leftNum, int& rightNum, char& mathSymbol, int mathLevel, c
     int userAnswer = 0;
     int attemptCount = 0;
     int correctAnswer = 0;
-    int tempVal;
+    int tempVal = 0;
+    int correct = 0; // This will track  correct answers for level up
+    int incorrect = 0; // Track  incorrect answers
 
     // Randomize left and right numbers (using currentRange)
     leftNum = (rand() % currentRange) + 1;
@@ -183,15 +185,26 @@ void AskQuestion(int& leftNum, int& rightNum, char& mathSymbol, int mathLevel, c
             cout << "That was incorrect. You have " << MAX_ATTEMPTS - i << " attempts left." << endl;
         }
     }
+    //Troubleshooting
+    if (userAnswer == correctAnswer) {
+        correct++;
+    } else if (userAnswer != correctAnswer) {
+        incorrect++;
+    }
 
     // Save the question to the list
     questions.push_back({mathLevel, leftNum, mathSymbol, rightNum, correctAnswer, attemptCount});
+
+    //Troubleshooting
+    cout << correct;
 }
 
 // Level the difficulty based on user performance
 void LevelUpOrDown(int &mathLevel, int &currentRange) {
-
-    if (correct >= 3) { // Levels up after 3 correct answers in a row
+    int correct = 0;
+    int incorrect = 0;
+cout << correct;
+    if (correct == 3) { // Levels up after 3 correct answers in a row
         mathLevel++;
         correct = 0; // Reset the streak counter
         incorrect = 0;
@@ -200,7 +213,7 @@ void LevelUpOrDown(int &mathLevel, int &currentRange) {
         cout << "New range is 1 to " << currentRange << endl;
         cout << endl;
     }
-    else if (incorrect >= 3 && mathLevel > 1) { // Levels down after 3 wrong answers
+    else if (incorrect == 3 && mathLevel > 1) { // Levels down after 3 wrong answers
         mathLevel--;
         correct = 0;
         incorrect = 0;
@@ -209,7 +222,6 @@ void LevelUpOrDown(int &mathLevel, int &currentRange) {
         cout << "New range is 1 to " << currentRange << endl;
         cout << endl;
     }
-    return;
 }
 
 

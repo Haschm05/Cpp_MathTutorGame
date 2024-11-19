@@ -18,8 +18,6 @@ using namespace std;
 extern vector<vector<int>> questions;  // Declare the vector as extern
 extern int totalCorrect;  // Declare totalCorrect as extern
 extern int totalIncorrect;  // Declare totalIncorrect as extern
-extern int correct; // This will track  correct answers for level up
-extern int incorrect; // Track  incorrect answers
 
 void IntroArt();
 void IntroPun();
