@@ -2,8 +2,8 @@
 Program: Math Tutor Version 3
 Programmers: Hayden Schmidt
 Date: 11/19/24 *Last updated version
-Github URL: https://github.com/Haschm05/MathTutorV6.git
-Description: A simple math tutor for elementary students. Adds the final summary.
+Github URL: https://github.com/Haschm05/MathTutorV5
+Description: A simple math tutor for elementary students. Converts code to functions for easier testing and modification.
 */
 
 #include <iostream> // required for couts & cins
@@ -14,17 +14,23 @@ Description: A simple math tutor for elementary students. Adds the final summary
 #include <cctype>
 #include <iomanip>
 #include <vector>
+
 using namespace std; // sets standard namespace
 
-//Vectors
+//Vectors and vector variables
 vector<vector<int>> questions;
-//Constants
-const int MAX_ATTEMPTS = 3; //Sets how many attempts per question
-const int LEVEL_RANGE_CHANGE = 10; //Sets how much the range changes per level
 int totalCorrect = 0; //Counter for correct answers
 int totalIncorrect = 0; //Counter for incorrect answers
 
-//Intro
+//Constants
+const int MAX_ATTEMPTS = 3; //Sets how many attempts per question
+const int LEVEL_RANGE_CHANGE = 10; //Sets how much the range changes per level
+
+//Used for leveling(not vector)
+int correct = 0;
+int incorrect = 0;
+
+//Intro Art
 void IntroArt() {
     //*********************************************************************
     // Set of cout statements to display the Silly Math ASCII art and welcome banner
@@ -54,96 +60,144 @@ void IntroPun() {
     if (userYN == "y") {
         //response to 'y' as input
         cout << "Great! Here they are:" << endl;
+
+        // Couts to display jokes. After user input, jokes appear. Maybe add functionality later to reveal answers to jokes after pressing enter.
+        cout << "*******************************************" << endl;
+        cout << endl;
+        cout << "Question: Do you think monsters are good at math?" << endl;
+        cout << "Answer: No, unless you Count Dracula." << endl;
+        cout << endl;
+        cout << "Question: Which knight created the round table?" << endl;
+        cout << "Answer: Sir Cumference." << endl;
+        cout << endl;
+        cout << "Question: What do you call a number who can't stay in place?" << endl;
+        cout << "Answer: A roamin' numeral." << endl;
+        cout << endl;
+        cout << "*******************************************" << endl;
+        cout << endl;
     }
     else {
         cout << "That's too bad." << endl;
-        cout << "You're gonna hear them anyway!" << endl;
     }
-    cout << endl;
-    // Couts to display jokes. After user input, jokes appear. Maybe add functionality later to reveal answers to jokes after pressing enter.
-    cout << "*******************************************" << endl;
-    cout << endl;
-    cout << "Question: Do you think monsters are good at math?" << endl;
-    cout << "Answer: No, unless you Count Dracula." << endl;
-    cout << endl;
-    cout << "Question: Which knight created the round table?" << endl;
-    cout << "Answer: Sir Cumference." << endl;
-    cout << endl;
-    cout << "Question: What do you call a number who can't stay in place?" << endl;
-    cout << "Answer: A roamin' numeral." << endl;
-    cout << endl;
-    cout << "*******************************************" << endl;
     cout << endl;
     return;
 }
 
+//Intro Get Name
 string IntroGetName() {
-    string userName = "0";
+    string userName = "unknown";
+
     // Beginning the interactive portion of the program
     cout << "Please enter your name to begin: ";
-    getline(cin, userName); // Get user input for name
+    cin >> userName;
     cout << endl;
+
     // Puts the user's name into the welcome message
     cout << "Welcome " << userName << ", to the Silly Math Tutor!" << endl;
     cout << endl;
     cout << "*******************************************" << endl;
     return userName;
 }
-void GenerateRandomNumbers(int &leftNum, int &rightNum, int currentRange) {
-    leftNum = (rand() % currentRange) + 1;
-    rightNum = (rand() % currentRange) + 1;
-}
 
-void AskQuestion(int leftNum, int rightNum, char mathSymbol, int mathLevel, string userName) {
+// Struct to store question data (ChatGPT helped with this one, was having trouble with name spaces)
+struct Question {
+    int mathLevel;
+    int leftNum;
+    char mathSymbol;
+    int rightNum;
+    int correctAnswer;
+    int attemptCount;
+};
 
+// Asks a math question
+void AskQuestion(int& leftNum, int& rightNum, char& mathSymbol, int mathLevel, const string& userName, int currentRange) {
     int userAnswer = 0;
     int attemptCount = 0;
-    int correctAnswer = 0; // Declare correctAnswer
+    int correctAnswer = 0;
+    int tempVal;
 
-    for (int i = 1; i <= MAX_ATTEMPTS; i++) { //Loops until user gets answer correct or until 3 wrong attempts
+    // Randomize left and right numbers (using currentRange)
+    leftNum = (rand() % currentRange) + 1;
+    rightNum = (rand() % currentRange) + 1;
 
+    // Randomly choose a math operation
+    tempVal = (rand() % 4) + 1;  // Generates a number between 1 and 4
+
+    // Select math operation
+    switch (tempVal) {
+        case 1:
+            mathSymbol = '+';  // Addition
+            correctAnswer = leftNum + rightNum;
+            break;
+
+        case 2:
+            mathSymbol = '-';  // Subtraction
+            // Ensure leftNum is greater than rightNum to avoid negative results
+            if (leftNum < rightNum) {
+                swap(leftNum, rightNum);
+            }
+            correctAnswer = leftNum - rightNum;
+            break;
+
+        case 3:
+            mathSymbol = '*';  // Multiplication
+            correctAnswer = leftNum * rightNum;
+            break;
+
+        case 4:
+            mathSymbol = '/';  // Division
+            correctAnswer = leftNum / rightNum;
+            break;
+
+        default:
+            cout << "Invalid question type encountered." << endl;
+            return; // Exit the function on invalid type
+    }
+
+    // Ask the user the math question
+    for (int i = 1; i <= MAX_ATTEMPTS; i++) {
         cout << endl;
-        cout << "[Level #" << mathLevel << "] " << userName << ", what does "
-                << leftNum << " " << mathSymbol << " " << rightNum << " = ";
+        cout << "[Level #" << mathLevel << "] " << userName << ", what is "
+             << leftNum << " " << mathSymbol << " " << rightNum << " = ";
 
-        // Loop until the user enters numeric data "From the assignment document"
+        // Loop until the user enters a valid numeric input
         while (!(cin >> userAnswer)) {
-            cin.clear(); // clear the cin error flag
-            cin.ignore(numeric_limits<streamsize>::max() ,
-                       '\n'); // ignore the max input, up to 'n'
-            cout << "\tInvalid input!" << endl;
-            cout << "\tPlease enter a number: ";
-        } // end of get userAnswer while loop
-        cout << endl; // extra space in between the answer and the confirmation message
+            cin.clear();  // Clear the error flag
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');  // Ignore invalid input
+            cout << "\tInvalid input! Please enter a number: ";
+        }
 
-        // Tests to see if user answer is correct
-        if (userAnswer == correctAnswer) { //Displays when correct
-            attemptCount = i;
-            totalCorrect++;
+        // Check if the answer is correct
+        if (userAnswer == correctAnswer) {
+            attemptCount = i;  // Store the attempt count when the user answers correctly
+            totalCorrect++;     // Increment total correct answers
+            correct++;
             cout << "Correct!" << endl;
-            cout << "You're a real Math Whizz!" << endl;
-            cout << endl;
             break;
         }
-        else if (i == MAX_ATTEMPTS) { //Displays when incorrect
-            cout << "Oops!" << endl;
-            cout << "You'll get 'em next time!" << endl;
-            cout << "The correct answer was " << correctAnswer << "." << endl; //gives the user the right answer
-            totalIncorrect++;
-            cout << endl;
-            attemptCount = 0;
+        else if (i == MAX_ATTEMPTS) {
+            cout << "Oops! You'll get 'em next time!" << endl;
+            cout << "The correct answer was " << correctAnswer << "." << endl;
+            totalIncorrect++;  // Increment total incorrect answers
+            incorrect++;
+            break;  // Exit the loop after max attempts
         }
-        else { //Else runs until user is out of attempts or until user gets the question correct
+        else {
             cout << "That was incorrect. You have " << MAX_ATTEMPTS - i << " attempts left." << endl;
         }
     }
+
+    // Save the question to the list
     questions.push_back({mathLevel, leftNum, mathSymbol, rightNum, correctAnswer, attemptCount});
 }
+
+//Level the difficulty
 void LevelUpOrDown(int &mathLevel, int &currentRange) {
-    if (totalCorrect == 3) { //Levels up if correct answers = 3
+
+    if (correct == 3) { //Levels up if correct answers = 3
         mathLevel++;
-        totalCorrect = 0; //Resets totalCorrect and totalIncorrect
-        totalIncorrect = 0;
+        correct = 0; //Resets correct and incorrect
+        incorrect = 0;
         currentRange += LEVEL_RANGE_CHANGE; //Adds 10 to current range
         cout << "You are now on Level " << mathLevel << "!" << endl;
         cout << "New range is 1 to " << currentRange << endl;
@@ -151,14 +205,38 @@ void LevelUpOrDown(int &mathLevel, int &currentRange) {
     }
     else if (totalIncorrect >= 3 && mathLevel > 1) { //Levels down after 3 wrong attempts. Will not level down on first level
         mathLevel--;
-        totalCorrect = 0;
-        totalIncorrect = 0;
+        correct = 0;
+        incorrect = 0;
         currentRange -= LEVEL_RANGE_CHANGE; //Subtracts 10 from current range
         cout << "You are now on Level " << mathLevel << "!" << endl;
         cout << "New range is 1 to " << currentRange << endl;
         cout << endl;
     }
 }
+
+string AskContinue() {
+    string userYN;
+
+    // clears input(fixes issue with interaction between leveling and continue)
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    cout << "Do you want to continue? (y = yes | n = no): ";
+    getline(cin, userYN);  // Use getline to avoid issues with leftover newline characters.
+
+    // Convert the user's input to lowercase
+    for (int i = 0; i < userYN.size(); i++) {
+        userYN.at(i) = tolower(userYN.at(i));
+    }
+
+    // Check for valid inputs
+    while (userYN != "y" && userYN != "yes" && userYN != "n" && userYN != "no") {
+        cout << "Invalid input, please try again: ";
+        getline(cin, userYN);  // Use getline again for consistent input handling.
+    }
+
+    return userYN;
+}
+
 
 void PrintSummary() {
     cout << "**************************************" << endl;
@@ -206,23 +284,29 @@ int main() {
     int mathLevel = 1; //Starts user on level 1
     int currentRange = LEVEL_RANGE_CHANGE; //Sets starting range at 10
     int attemptCount = 0;
+    int correctAnswer = 0;
 
     //Strings
     string userYN = "?";
+    string userName = "unknown";
 
     //Chars
     char mathSymbol = '?';
 
     srand(time(0)); // Generates a unique seed so its random.
 
-    // Starting the main function
-    IntroArt();
-    //IntroPun();
-    //string userName = IntroGetName();
-    //GenerateRandomNumbers();
-    //AskQuestion();
-    //LevelUpOrDown();
-    //PrintSummary();
+    // Starting the main code
+    IntroArt(); //outputs AscII aart
+    IntroPun(); // outputs pun
+    userName = IntroGetName(); // gets username
+
+    do {
+        AskQuestion(leftNum, rightNum, mathSymbol, mathLevel, userName, currentRange); // generates and asks question
+        LevelUpOrDown(mathLevel, currentRange);  // Call the leveling function
+        userYN = AskContinue();
+    } while (userYN == "y" || userYN == "yes"); //Loop goes until userYN no longer equals "yes"
+
+    PrintSummary();
 
     return 0;
 }
