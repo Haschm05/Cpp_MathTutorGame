@@ -19,6 +19,10 @@ extern vector<vector<int>> questions;  // Declare the vector as extern
 extern int totalCorrect;  // Declare totalCorrect as extern
 extern int totalIncorrect;  // Declare totalIncorrect as extern
 
+//Troubleshooting but it worked
+extern int correct;
+extern int incorrect;
+
 void IntroArt();
 void IntroPun();
 string IntroGetName();

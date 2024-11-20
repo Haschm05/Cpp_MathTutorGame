@@ -54,21 +54,21 @@ int main() {
 
     srand(time(0)); // Generates a unique seed so its random.
 
+    //Troubleshooting but it worked
+    correct = 0;
+    incorrect = 0;
+
     // Starting the main code
-    //IntroArt(); // outputs ASCII art
-    //IntroPun(); // outputs pun
-    //userName = IntroGetName(); // gets username
+    IntroArt(); // outputs ASCII art
+    IntroPun(); // outputs pun
+    userName = IntroGetName(); // gets username
 
     do {
-        // Reset the correct and incorrect counters at the start of each new round
-        correct = 0;
-        incorrect = 0;
-
         // Ask the question
         AskQuestion(leftNum, rightNum, mathSymbol, mathLevel, userName, currentRange);
 
-        // Level up or down after the question
-        //LevelUpOrDown(mathLevel, currentRange);
+        //Level up or down after the question
+        LevelUpOrDown(mathLevel, currentRange);
 
         // Ask if the user wants to continue
         userYN = AskContinue();
@@ -76,7 +76,7 @@ int main() {
     } while (userYN == "y" || userYN == "yes"); // Loop goes until userYN no longer equals "yes"
 
     // Print the summary at the end
-    //PrintSummary();
+    PrintSummary();
 
     return 0;
 }
