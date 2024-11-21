@@ -18,20 +18,6 @@ Description: A simple math tutor for elementary students. Converts code to funct
 
 using namespace std;
 
-//Constants
-const int MAX_ATTEMPTS = 3; //Sets how many attempts per question
-const int LEVEL_RANGE_CHANGE = 10; //Sets how much the range changes per level
-
-// Struct to store question data (ChatGPT helped with this one, was having trouble with name spaces)
-struct Question {
-    int mathLevel;
-    int leftNum;
-    char mathSymbol;
-    int rightNum;
-    int correctAnswer;
-    int attemptCount;
-};
-
 //Intro Art
 void IntroArt() {
     //*********************************************************************
@@ -101,63 +87,63 @@ string IntroGetName() {
     return userName;
 }
 
-void AskQuestion(int& leftNum, int& rightNum, char& mathSymbol, int mathLevel, const string& userName, int currentRange) {
-    int userAnswer = 0;
-    int attemptCount = 0;
-    int correctAnswer = 0;
-    int tempVal = 0;
-
+// Function to generate a math question
+void GenerateQuestion(Question &question, GameState &state) {
+    int tempVal = (rand() % 4) + 1;  // Generates a number between 1 and 4
     // Randomize left and right numbers (using currentRange)
-    leftNum = (rand() % currentRange) + 1;
-    rightNum = (rand() % currentRange) + 1;
-
-    // Randomly choose a math operation
-    tempVal = (rand() % 4) + 1;  // Generates a number between 1 and 4
+    question.leftNum = (rand() % state.currentRange) + 1;
+    question.rightNum = (rand() % state.currentRange) + 1;
 
     // Select math operation
     switch (tempVal) {
         case 1:
-            mathSymbol = '+';  // Addition
-            correctAnswer = leftNum + rightNum;
+            question.mathSymbol = '+';  // Addition
+            question.correctAnswer = question.leftNum + question.rightNum;
             break;
 
         case 2:
-            mathSymbol = '-';  // Subtraction
+            question.mathSymbol = '-';  // Subtraction
             // Ensure leftNum is greater than rightNum to avoid negative results
-            if (leftNum < rightNum) {
-                swap(leftNum, rightNum);
+            if (question.leftNum < question.rightNum) {
+                swap(question.leftNum, question.rightNum);
             }
-            correctAnswer = leftNum - rightNum;
+            question.correctAnswer = question.leftNum - question.rightNum;
             break;
 
         case 3:
-            mathSymbol = '*';  // Multiplication
-            correctAnswer = leftNum * rightNum;
+            question.mathSymbol = '*';  // Multiplication
+            question.correctAnswer = question.leftNum * question.rightNum;
             break;
 
         case 4:
-            mathSymbol = '/';  // Division
+            question.mathSymbol = '/';  // Division
             // Following code makes sure division problem doesn't generate a fraction
-            if (rightNum == 0) {
-                rightNum = 1; // If the denominator is 0, set it to 1
+            if (question.rightNum == 0) {
+                question.rightNum = 1; // If the denominator is 0, set it to 1
             }
             // Ensure the left number is divisible by the right number
-            while (leftNum % rightNum != 0) { // While the remainder is not 0
-                leftNum = (rand() % currentRange) + 1; // Generate a new left number
+            while (question.leftNum % question.rightNum != 0) { // While the remainder is not 0
+                question.leftNum = (rand() % state.currentRange) + 1; // Generate a new left number
             }
-            correctAnswer = leftNum / rightNum;
+            question.correctAnswer = question.leftNum / question.rightNum;
             break;
 
         default:
             cout << "Invalid question type encountered." << endl;
-            exit (-1); // Exit the function on invalid type
+            exit(-1); // Exit the function on invalid type
     }
+}
+
+// Function to ask a question and return the question's details
+void AskUser(Question &question, GameState &state, const string &userName, vector<Question> &questions) {
+    int userAnswer = 0;
+    int attemptCount = 0;
 
     // Ask the user the math question
     for (int i = 1; i <= MAX_ATTEMPTS; i++) {
         cout << endl;
-        cout << "[Level #" << mathLevel << "] " << userName << ", what is "
-             << leftNum << " " << mathSymbol << " " << rightNum << " = ";
+        cout << "[Level #" << question.mathLevel << "] " << userName << ", what is "
+             << question.leftNum << " " << question.mathSymbol << " " << question.rightNum << " = ";
 
         // Loop until the user enters a valid numeric input
         while (!(cin >> userAnswer)) {
@@ -167,18 +153,18 @@ void AskQuestion(int& leftNum, int& rightNum, char& mathSymbol, int mathLevel, c
         }
 
         // Check if the answer is correct
-        if (userAnswer == correctAnswer) {
+        if (userAnswer == question.correctAnswer) {
             attemptCount = i;  // Store the attempt count when the user answers correctly
-            totalCorrect++;     // Increment total correct answers
-            correct++;
+            state.totalCorrect++;     // Increment total correct answers
+            state.correct++;
             cout << "Correct!" << endl;
             break;
         }
         else if (i == MAX_ATTEMPTS) {
             cout << "Oops! You'll get 'em next time!" << endl;
-            cout << "The correct answer was " << correctAnswer << "." << endl;
-            totalIncorrect++;  // Increment total incorrect answers
-            incorrect++;
+            cout << "The correct answer was " << question.correctAnswer << "." << endl;
+            state.totalIncorrect++;  // Increment total incorrect answers
+            state.incorrect++;
             break;  // Exit the loop after max attempts
         }
         else {
@@ -187,34 +173,37 @@ void AskQuestion(int& leftNum, int& rightNum, char& mathSymbol, int mathLevel, c
     }
 
     // Save the question to the list
-    questions.push_back({mathLevel, leftNum, mathSymbol, rightNum, correctAnswer, attemptCount});
+    question.attemptCount = attemptCount;
+    questions.push_back(question);
 }
 
 // Level the difficulty based on user performance
-void LevelUpOrDown(int &mathLevel, int &currentRange) {
+void LevelUpOrDown(GameState &state) {
     cout << endl;
 
-    if (correct >= 3) { // Levels up after 3 correct answers in a row
-        mathLevel++;
-        correct = 0; // Reset the streak counter
-        incorrect = 0;
-        currentRange += LEVEL_RANGE_CHANGE; // Adds 10 to current range
-        cout << "You are now on Level " << mathLevel << "!" << endl;
-        cout << "New range is 1 to " << currentRange << endl;
+    //For troubleshooting
+    //cout << state.mathLevel;
+
+    if (state.correct >= 3) { // Levels up after 3 correct answers in a row
+        state.mathLevel++;
+        state.correct = 0; // Reset the streak counter
+        state.incorrect = 0;
+        state.currentRange += LEVEL_RANGE_CHANGE; // Adds 10 to current range
+        cout << "You are now on Level " << state.mathLevel << "!" << endl;
+        cout << "New range is 1 to " << state.currentRange << endl;
         cout << endl;
     }
-    else if (incorrect >= 3 && mathLevel > 1) { // Levels down after 3 wrong answers
-        mathLevel--;
-        correct = 0;
-        incorrect = 0;
-        currentRange -= LEVEL_RANGE_CHANGE; // Subtracts 10 from current range
+    else if (state.incorrect >= 3 && state.mathLevel > 1) { // Levels down after 3 wrong answers
+        state.mathLevel--;
+        state.correct = 0;
+        state.incorrect = 0;
+        state.currentRange -= LEVEL_RANGE_CHANGE; // Subtracts 10 from current range
         cout << "You got too many wrong, leveling you down." << endl;
-        cout << "You are now on Level " << mathLevel << "!" << endl;
-        cout << "New range is 1 to " << currentRange << endl;
+        cout << "You are now on Level " << state.mathLevel << "!" << endl;
+        cout << "New range is 1 to " << state.currentRange << endl;
         cout << endl;
     }
 }
-
 
 string AskContinue() {
     string userYN;
@@ -239,36 +228,40 @@ string AskContinue() {
     return userYN;
 }
 
-
+// Function to print summary report
 void PrintSummary() {
     cout << "**************************************" << endl;
     cout << "*           Summary Report           *" << endl;
     cout << "**************************************" << endl;
     cout << "Level:    Question:         Attempts: " << endl;
     cout << "______    _________         _________ " << endl;
+
     int totalQuestions = 0;
     double averageCorrect = 0;
-    for (int i = 0; i < questions.size(); i++) {
-        int mathLevel = questions[i][0];
-        int leftNum = questions[i][1];
-        char mathSymbol = static_cast<char>(questions[i][2]);
-        int rightNum = questions[i][3];
-        int correctAnswer = questions[i][4];
-        int attemptCount = questions[i][5];
-        cout << setw(2) << right << mathLevel << "\t" << setw(3) << right << leftNum << " "
-                << mathSymbol << " " << rightNum << " = " << correctAnswer << " ";
-        if (attemptCount != 0) {
-            cout << "\t\t" << attemptCount << endl;
+
+    // Loop through each question to print details
+    for (const auto &question : questions) {
+        cout << setw(2) << right << question.mathLevel << "\t"
+             << setw(3) << right << question.leftNum << " "
+             << question.mathSymbol << " " << question.rightNum << " = "
+             << question.correctAnswer << " ";
+
+        if (question.attemptCount != 0) {
+            cout << "\t\t" << question.attemptCount << endl;
         } else {
-            cout << "\tIncorrect" << endl;
+            cout << "\t\tIncorrect" << endl;
         }
         totalQuestions++;
     }
-    averageCorrect = (static_cast<double>(totalCorrect) / totalQuestions) * 100;
+
+    // Calculate the average correct percentage
+    averageCorrect = (static_cast<double>(state.totalCorrect) / totalQuestions) * 100;
+
     cout << "\nTotal questions: " << totalQuestions << endl;
-    cout << "Total correct: " << totalCorrect << endl;
-    cout << "Total incorrect: " << totalIncorrect << endl;
-    cout << "Average correct: " << averageCorrect << "%" << endl;
+    cout << "Total correct: " << state.totalCorrect << endl;
+    cout << "Total incorrect: " << state.totalIncorrect << endl;
+    cout << "Average correct: " << fixed << setprecision(2) << averageCorrect << "%" << endl;
+
     cout << "\nThank you for playing Silly Math Tutor!" << endl;
     cout << "Be sure to come back in the near future for more fun!" << endl;
 }

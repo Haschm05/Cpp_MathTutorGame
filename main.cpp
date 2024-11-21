@@ -19,63 +19,52 @@ Description: A simple math tutor for elementary students. Converts code to funct
 
 using namespace std; // sets standard namespace
 
-// Define the global variables
-vector<vector<int>> questions; // Define the vector
-int totalCorrect = 0;  // Define totalCorrect
-int totalIncorrect = 0;  // Define totalIncorrect
-int correct = 0;  // Define correct
-int incorrect = 0;  // Define incorrect
-
-// Constants
-const int MAX_ATTEMPTS = 3; // Sets how many attempts per question
-const int LEVEL_RANGE_CHANGE = 10; // Sets how much the range changes per level
-
-// Struct to store question data (ChatGPT helped with this one, was having trouble with name spaces)
-struct Question {
-    int mathLevel;
-    int leftNum;
-    char mathSymbol;
-    int rightNum;
-    int correctAnswer;
-    int attemptCount;
-};
+//this is my hail mary
+vector<Question> questions;  // Define the vector to hold all questions
+GameState state;             // Define the global game state
 
 int main() {
-    // Declares and initializes variables
-    int leftNum = 0;
-    int rightNum = 0;
-    int mathLevel = 1; // Starts user on level 1
-    int currentRange = LEVEL_RANGE_CHANGE; // Sets starting range at 10
 
-    string userYN = "?";
+    // Generate a math question
+    Question question;  // Create a new Question object
+
+    //for testing
     string userName = "unknown";
 
-    char mathSymbol = '?';
+    // issue with leveling... again
+    //some logic to set the level properly, hopefully
+    question.mathLevel = 1;
 
-    srand(time(0)); // Generates a unique seed so its random.
+    // Seed the random number generator
+    srand(static_cast<unsigned int>(time(0)));
+/*
+    // Display the intro art and ask about math puns
+    IntroArt();
+    IntroPun();
 
-    //Troubleshooting but it worked
-    correct = 0;
-    incorrect = 0;
+    // Get the user's name
+    string userName = IntroGetName();
+*/
+    // Start the game loop
+    bool continueGame = true;
+    while (continueGame) {
 
-    // Starting the main code
-    IntroArt(); // outputs ASCII art
-    IntroPun(); // outputs pun
-    userName = IntroGetName(); // gets username
+        GenerateQuestion(question, state);  // Pass the question and state to the function
 
-    do {
-        // Ask the question
-        AskQuestion(leftNum, rightNum, mathSymbol, mathLevel, userName, currentRange);
+        // Ask the user the math question and save the results
+        AskUser(question, state, userName, questions);  // Pass the question, state, userName, and question vector
 
-        //Level up or down after the question
-        LevelUpOrDown(mathLevel, currentRange);
+        // Adjust the difficulty based on user performance
+        LevelUpOrDown(state);
 
         // Ask if the user wants to continue
-        userYN = AskContinue();
+        string userYN = AskContinue();
+        if (userYN == "n" || userYN == "no") {
+            continueGame = false;  // End the game if the user doesn't want to continue
+        }
+    }
 
-    } while (userYN == "y" || userYN == "yes"); // Loop goes until userYN no longer equals "yes"
-
-    // Print the summary at the end
+    // Print the summary of the game
     PrintSummary();
 
     return 0;

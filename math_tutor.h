@@ -14,20 +14,40 @@ Description: A simple math tutor for elementary students. Converts code to funct
 
 using namespace std;
 
-// fixes compiler error(chatGPT for the save)
-extern vector<vector<int>> questions;  // Declare the vector as extern
-extern int totalCorrect;  // Declare totalCorrect as extern
-extern int totalIncorrect;  // Declare totalIncorrect as extern
+// Constants
+const int MAX_ATTEMPTS = 3;
+const int LEVEL_RANGE_CHANGE = 10;
 
-//Troubleshooting but it worked
-extern int correct;
-extern int incorrect;
+// Structs for storing global state and question data
+struct GameState {
+    int totalCorrect = 0;
+    int totalIncorrect = 0;
+    int correct = 0;
+    int incorrect = 0;
+    int mathLevel = 1;
+    int currentRange = 10;
+};
 
+struct Question {
+    int mathLevel;
+    int leftNum;
+    char mathSymbol;
+    int rightNum;
+    int correctAnswer;
+    int attemptCount;
+};
+
+//Vectors
+extern vector<Question> questions;  // Vector holding all the questions asked
+extern GameState state;  // Global state for tracking total correct, incorrect, etc.
+
+//functions
 void IntroArt();
 void IntroPun();
 string IntroGetName();
-void AskQuestion(int& leftNum, int& rightNum, char& mathSymbol, int mathLevel, const string& userName, int currentRange);
-void LevelUpOrDown(int &mathLevel, int &currentRange);
+void GenerateQuestion(Question &question, GameState &state);
+void AskUser(Question &question, GameState &state, const string &userName, vector<Question> &questions);
+void LevelUpOrDown(GameState &state);
 string AskContinue();
 void PrintSummary();
 
