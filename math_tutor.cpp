@@ -18,6 +18,8 @@ Description: A simple math tutor for elementary students. Converts code to funct
 
 using namespace std;
 
+Question question;
+
 //Intro Art
 void IntroArt() {
     //*********************************************************************
@@ -142,6 +144,8 @@ void AskUser(Question &question, GameState &state, const string &userName, vecto
     // Ask the user the math question
     for (int i = 1; i <= MAX_ATTEMPTS; i++) {
         cout << endl;
+        // Update the question level within the loop
+        question.mathLevel = state.mathLevel;
         cout << "[Level #" << question.mathLevel << "] " << userName << ", what is "
              << question.leftNum << " " << question.mathSymbol << " " << question.rightNum << " = ";
 
@@ -177,13 +181,10 @@ void AskUser(Question &question, GameState &state, const string &userName, vecto
     questions.push_back(question);
 }
 
-// Level the difficulty based on user performance
 void LevelUpOrDown(GameState &state) {
     cout << endl;
 
-    //For troubleshooting
-    //cout << state.mathLevel;
-
+    // Level up or down AFTER the question is asked and answered
     if (state.correct >= 3) { // Levels up after 3 correct answers in a row
         state.mathLevel++;
         state.correct = 0; // Reset the streak counter
@@ -203,6 +204,8 @@ void LevelUpOrDown(GameState &state) {
         cout << "New range is 1 to " << state.currentRange << endl;
         cout << endl;
     }
+    // Update the question level to reflect the new state level
+    question.mathLevel = state.mathLevel;
 }
 
 string AskContinue() {

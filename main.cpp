@@ -29,7 +29,7 @@ int main() {
     Question question;  // Create a new Question object
 
     //for testing
-    string userName = "unknown";
+    //string userName = "unknown";
 
     // issue with leveling... again
     //some logic to set the level properly, hopefully
@@ -37,25 +37,26 @@ int main() {
 
     // Seed the random number generator
     srand(static_cast<unsigned int>(time(0)));
-/*
+
     // Display the intro art and ask about math puns
     IntroArt();
     IntroPun();
 
     // Get the user's name
     string userName = IntroGetName();
-*/
+
     // Start the game loop
     bool continueGame = true;
     while (continueGame) {
 
+        //generates the question to be asked
         GenerateQuestion(question, state);  // Pass the question and state to the function
-
-        // Ask the user the math question and save the results
-        AskUser(question, state, userName, questions);  // Pass the question, state, userName, and question vector
 
         // Adjust the difficulty based on user performance
         LevelUpOrDown(state);
+
+        // Ask the user the math question and save the results
+        AskUser(question, state, userName, questions);  // Pass the question, state, userName, and question vector
 
         // Ask if the user wants to continue
         string userYN = AskContinue();
