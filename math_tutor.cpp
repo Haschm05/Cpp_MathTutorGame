@@ -1,5 +1,5 @@
 /*
-Program: Math Tutor Version 3
+Program: Math Tutor Version 5
 Programmers: Hayden Schmidt
 Date: 11/19/24 *Last updated version
 Github URL: https://github.com/Haschm05/MathTutorV5
@@ -22,7 +22,6 @@ Question question;
 
 //Intro Art
 void IntroArt() {
-    //*********************************************************************
     // Set of cout statements to display the Silly Math ASCII art and welcome banner
     cout << "*******************************************" << endl;
     cout << " _____ _ _ _      ___  ___      _   _    " << endl;
@@ -38,7 +37,6 @@ void IntroArt() {
     cout << "*                  Hayden                 *" << endl;
     cout << "*******************************************" << endl;
     cout << endl;
-    return;
 }
 
 //Intro Pun
@@ -66,11 +64,10 @@ void IntroPun() {
         cout << "*******************************************" << endl;
         cout << endl;
     }
-    else {
+    else { //if the user does not answer yes
         cout << "That's too bad." << endl;
     }
     cout << endl;
-    return;
 }
 
 //Intro Get Name
@@ -92,6 +89,7 @@ string IntroGetName() {
 // Function to generate a math question
 void GenerateQuestion(Question &question, GameState &state) {
     int tempVal = (rand() % 4) + 1;  // Generates a number between 1 and 4
+
     // Randomize left and right numbers (using currentRange)
     question.leftNum = (rand() % state.currentRange) + 1;
     question.rightNum = (rand() % state.currentRange) + 1;

@@ -10,7 +10,6 @@ Description: A simple math tutor for elementary students. Converts code to funct
 #include <cstdlib> // allows for randomizer
 #include <ctime> // enables use of time function
 #include <string> // allows for strings to be used
-#include <limits> // required for numeric limits
 #include <cctype>
 #include <iomanip>
 #include <vector>

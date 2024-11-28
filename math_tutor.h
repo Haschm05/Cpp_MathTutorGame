@@ -19,6 +19,7 @@ const int MAX_ATTEMPTS = 3;
 const int LEVEL_RANGE_CHANGE = 10;
 
 // Structs for storing global state and question data
+// A struct is literally a substitute for a variable, and a superior one from what ive seen (easier to use)
 struct GameState {
     int totalCorrect = 0;
     int totalIncorrect = 0;
