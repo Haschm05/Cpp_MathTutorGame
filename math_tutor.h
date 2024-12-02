@@ -1,5 +1,5 @@
 /*
-Program: Math Tutor Version 3
+Program: Math Tutor Version 5
 Programmers: Hayden Schmidt
 Date: 11/19/24 *Last updated version
 Github URL: https://github.com/Haschm05/MathTutorV5
@@ -14,27 +14,14 @@ Description: A simple math tutor for elementary students. Converts code to funct
 
 using namespace std;
 
-// Constants
-const int MAX_ATTEMPTS = 3;
-const int LEVEL_RANGE_CHANGE = 10;
-
-//Vectors
-extern vector<vector<int>> questions;
-
-//Trying something
-int tracking = 0;
-int totalCorrect = 0;
-int totalIncorrect = 0;
-
 //functions
 void IntroArt();
 void IntroPun();
 string IntroGetName();
-void GenerateQuestion(vector<vector<int>> questions);
-void AskUser(vector<vector<int>> questions);
-void LevelUpOrDown();
+vector<int> GenerateQuestion(int mathLevel);
+bool AskUser(vector<int> &row);
 string AskContinue(string userYN);
-void PrintSummary();
+void PrintSummary(const vector<vector<int>> &questions);
 
 
 #endif //MATH_TUTOR_H

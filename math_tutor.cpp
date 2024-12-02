@@ -18,6 +18,9 @@ Description: A simple math tutor for elementary students. Converts code to funct
 
 using namespace std;
 
+const int MAX_ATTEMPTS = 3;
+const int LEVEL_RANGE_CHANGE = 10;
+
 //Intro Art
 void IntroArt() {
     // Set of cout statements to display the Silly Math ASCII art and welcome banner
@@ -82,22 +85,49 @@ string IntroGetName() {
     cout << "Welcome " << userName << ", to the Silly Math Tutor!" << endl;
     cout << endl;
     cout << "*******************************************" << endl;
+
+    return userName;
 }
 
-// Function to generate a math question
-void GenerateQuestion(vector<vector<int> > questions) {
-    int leftNum = 0;
-    int rightNum = 0;
+void LevelUpOrDown(int totalCorrect, int totalIncorrect) {
+
     int currentRange = 0;
-    char mathSymbol = '?';
-    int correctAnswer = 0;
-    int temp = 0;
     int mathLevel = 0;
     string userName;
 
+    // Leveling Up/Down based on attempts
+    if (totalCorrect == 3) { //Levels up if correct answers = 3
+        mathLevel++;
+        totalCorrect = 0; //Resets totalCorrect and totalIncorrect
+        totalIncorrect = 0;
+        currentRange += LEVEL_RANGE_CHANGE; //Adds 10 to current range
+        cout << "You are now on Level " << mathLevel << "!" << endl;
+        cout << "New range is 1 to " << currentRange << endl;
+        cout << endl;
+    }
+    else if (totalIncorrect >= 3 && mathLevel > 1) { //Levels down after 3 wrong attempts. Will not level down on first level
+        mathLevel--;
+        totalCorrect = 0;
+        totalIncorrect = 0;
+        currentRange -= LEVEL_RANGE_CHANGE; //Subtracts 10 from current range
+        cout << "You are now on Level " << mathLevel << "!" << endl;
+        cout << "New range is 1 to " << currentRange << endl;
+        cout << endl;
+    }
+}
+
+// Function to generate a math question
+vector<int> GenerateQuestion(int mathLevel) {
+    int leftNum = 0;
+    int rightNum = 0;
+    char mathSymbol = '?';
+    int correctAnswer = 0;
+    int temp = 0;
+    string userName;
+
     //Portion of code dedicated to random number generation
-    leftNum = (rand() % currentRange) + 1; //randomizes first number
-    rightNum = (rand() % currentRange) + 1; //randomizes second number
+    leftNum = (rand() % (LEVEL_RANGE_CHANGE * mathLevel) + 1); //randomizes first number
+    rightNum = (rand() % (LEVEL_RANGE_CHANGE * mathLevel) + 1); //randomizes second number
 
     //enum to replace the mathType integer
     enum mthType { MT_ADD, MT_SUB, MT_MUL, MT_DIV };
@@ -141,30 +171,25 @@ void GenerateQuestion(vector<vector<int> > questions) {
             cout << "Program ended with a -1 error" << endl;
     }
 
-    vector<int> row = {mathLevel, leftNum, mathSymbol, rightNum, correctAnswer};
+    return {mathLevel, leftNum, mathSymbol, rightNum, correctAnswer};
 }
 
 // Function to ask a question and return the question's details
-void AskUser(vector<vector<int>> questions) {
-
-    tracking++;
+bool AskUser(vector<int> &row) {
 
     int mathLevel = 0;
     int leftNum = 0;
     int rightNum = 0;
     int correctAnswer = 0;
-    int attemptCount = 0;
     int userAnswer = 0;
     char mathSymbol = '?';
-    string userName;
+    string userName = "unknown";
 
-    vector<vector<int>> row;
-
-    mathLevel = questions.at(tracking).at(0);
-    leftNum = questions.at(tracking).at(1);
-    mathSymbol = static_cast<char>(questions.at(tracking).at(2)); // Change to MathType
-    rightNum = questions.at(tracking).at(3);
-    correctAnswer = questions.at(tracking).at(4);
+    mathLevel = row.at(0);
+    leftNum = row.at(1);
+    mathSymbol = static_cast<char>(row.at(2)); // Change to MathType
+    rightNum = row.at(3);
+    correctAnswer = row.at(4);
 
     for (int i = 1; i <= MAX_ATTEMPTS; i++) { //Loops until user gets answer correct or until 3 wrong attempts
         cout << endl;
@@ -184,18 +209,16 @@ void AskUser(vector<vector<int>> questions) {
 
         // Tests to see if user answer is correct
         if (userAnswer == correctAnswer) { //Displays when correct
-            row.push_back(vector<vector<int> >::value_type(i));
-            totalCorrect++;
+            row.push_back(i);
             cout << "Correct!" << endl;
             cout << "You're a real Math Whizz!" << endl;
             cout << endl;
-            break;
+            return true;
         }
         else if (i == MAX_ATTEMPTS) { //Displays when incorrect
             cout << "Oops!" << endl;
             cout << "You'll get 'em next time!" << endl;
             cout << "The correct answer was " << correctAnswer << "." << endl; //gives the user the right answer
-            totalIncorrect++;
             cout << endl;
              row.push_back({0});
         }
@@ -204,33 +227,7 @@ void AskUser(vector<vector<int>> questions) {
         }
     }
 
-    // Modify the original questions vector by adding the row
-    questions.push_back(row.back());  // Push the last vector<int> in row to questions
-}
-
-void LevelUpOrDown() {
-    cout << endl;
-
-    string userYN = "n";
-
-    getline(cin, userYN);
-
-    //Asking user if they want to continue
-    while (true) {
-        cout << "Do you want to continue? (y = yes | n = no): ";
-        getline(cin, userYN);
-
-        //to lower case the users input
-        for (int i = 0; i < userYN.size(); i++) {
-            userYN.at(i) = tolower(userYN.at(i));
-        }
-        if (userYN == "y" || userYN == "yes" || userYN == "no" || userYN == "n") {
-            break;
-        }else {
-            cout << "Invalid input, please try again..." << endl;
-            cout << endl;
-        } //end of if (y, yes, n, no)
-    }// end of inner while loop to validate yes, no
+    return false;
 }
 
 string AskContinue(string userYN) {
@@ -256,7 +253,7 @@ string AskContinue(string userYN) {
 }
 
 // Function to print summary report
-void PrintSummary() {
+void PrintSummary(const vector<vector<int>> &questions) {
 
     int mathLevel = 0;
     int leftNum = 0;
@@ -269,7 +266,8 @@ void PrintSummary() {
     char mathSymbol = '?';
     string userName;
 
-
+    int totalCorrect = 0; //Resets these values to 0
+    int totalIncorrect = 0;
 
      //Outputs Vector for summary report
     cout << "**************************************" << endl;
@@ -277,9 +275,6 @@ void PrintSummary() {
     cout << "**************************************" << endl;
     cout << "Level:    Question:         Attempts: " << endl;
     cout << "______    _________         _________ " << endl;
-
-    totalCorrect = 0; //Resets these values to 0
-    totalIncorrect = 0;
 
     for (int i = 0; i < questions.size(); i++) {
         mathLevel = questions.at(i).at(0);
