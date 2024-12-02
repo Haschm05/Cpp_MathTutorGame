@@ -12,60 +12,36 @@ Description: A simple math tutor for elementary students. Converts code to funct
 #include <string> // allows for strings to be used
 #include <cctype>
 #include <iomanip>
+#include <limits>
 #include <vector>
 
 #include "math_tutor.h" // includes header file
 
 using namespace std; // sets standard namespace
 
-//this is my hail mary
-vector<Question> questions;  // Define the vector to hold all questions
-GameState state;             // Define the global game state
-
 int main() {
 
-    // Generate a math question
-    Question question;  // Create a new Question object
+    string userYN = "y";
 
-    //for testing
-    //string userName = "unknown";
+    srand(time(0)); // Generates a unique seed so its random.
 
-    // issue with leveling... again
-    //some logic to set the level properly, hopefully
-    question.mathLevel = 1;
+    //void IntroArt();
+    //void IntroPun();
+    //string IntroGetName();
 
-    // Seed the random number generator
-    srand(static_cast<unsigned int>(time(0)));
 
-    // Display the intro art and ask about math puns
-    IntroArt();
-    IntroPun();
-
-    // Get the user's name
-    string userName = IntroGetName();
-
-    // Start the game loop
-    bool continueGame = true;
-    while (continueGame) {
-
-        //generates the question to be asked
-        GenerateQuestion(question, state);  // Pass the question and state to the function
-
-        // Adjust the difficulty based on user performance
-        LevelUpOrDown(state);
-
-        // Ask the user the math question and save the results
-        AskUser(question, state, userName, questions);  // Pass the question, state, userName, and question vector
-
-        // Ask if the user wants to continue
-        string userYN = AskContinue();
-        if (userYN == "n" || userYN == "no") {
-            continueGame = false;  // End the game if the user doesn't want to continue
-        }
+    do { //Beginning of central loop that repeats number generation and math problems
+        void GenerateQuestion(vector<vector<int>> questions);
+        void AskUser(vector<vector<int>> questions);
+        //void LevelUpOrDown();
+        //string AskContinue();
     }
 
-    // Print the summary of the game
-    PrintSummary();
+    while (userYN == "y" || userYN == "yes"); //Loop goes until userYN no longer equals "yes"
+
+    //void PrintSummary();
+
 
     return 0;
+
 }

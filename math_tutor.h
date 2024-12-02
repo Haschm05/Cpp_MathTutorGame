@@ -18,38 +18,22 @@ using namespace std;
 const int MAX_ATTEMPTS = 3;
 const int LEVEL_RANGE_CHANGE = 10;
 
-// Structs for storing global state and question data
-// A struct is literally a substitute for a variable, and a superior one from what ive seen (easier to use)
-struct GameState {
-    int totalCorrect = 0;
-    int totalIncorrect = 0;
-    int correct = 0;
-    int incorrect = 0;
-    int mathLevel = 1;
-    int currentRange = 10;
-};
-
-struct Question {
-    int mathLevel;
-    int leftNum;
-    char mathSymbol;
-    int rightNum;
-    int correctAnswer;
-    int attemptCount;
-};
-
 //Vectors
-extern vector<Question> questions;  // Vector holding all the questions asked
-extern GameState state;  // Global state for tracking total correct, incorrect, etc.
+extern vector<vector<int>> questions;
+
+//Trying something
+int tracking = 0;
+int totalCorrect = 0;
+int totalIncorrect = 0;
 
 //functions
 void IntroArt();
 void IntroPun();
 string IntroGetName();
-void GenerateQuestion(Question &question, GameState &state);
-void AskUser(Question &question, GameState &state, const string &userName, vector<Question> &questions);
-void LevelUpOrDown(GameState &state);
-string AskContinue();
+void GenerateQuestion(vector<vector<int>> questions);
+void AskUser(vector<vector<int>> questions);
+void LevelUpOrDown();
+string AskContinue(string userYN);
 void PrintSummary();
 
 
