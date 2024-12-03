@@ -2,7 +2,7 @@
 Program: Math Tutor Version 5
 Programmers: Hayden Schmidt
 Date: 11/19/24 *Last updated version
-Github URL: https://github.com/Haschm05/MathTutorV5
+GitHub URL: https://github.com/Haschm05/MathTutorV5
 Description: A simple math tutor for elementary students. Converts code to functions for easier testing and modification.
 */
 
@@ -18,10 +18,11 @@ using namespace std;
 void IntroArt();
 void IntroPun();
 string IntroGetName();
+void LevelUpOrDown(int &attempt, int &mathLevel);
 vector<int> GenerateQuestion(int mathLevel);
-bool AskUser(vector<int> &row);
-string AskContinue(string userYN);
-void PrintSummary(const vector<vector<int>> &questions);
+bool AskUser(vector<int> &row, string userName);
+string AskContinue();
+void PrintSummary(const vector<vector<int>> &questions, string userName);
 
 
 #endif //MATH_TUTOR_H

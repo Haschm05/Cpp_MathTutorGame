@@ -69,6 +69,7 @@ void IntroPun() {
         cout << "That's too bad." << endl;
     }
     cout << endl;
+    cin.clear();
 }
 
 //Intro Get Name
@@ -77,7 +78,6 @@ string IntroGetName() {
 
     // Beginning the interactive portion of the program
     cout << "Please enter your name to begin: ";
-    getline(cin, userName); // Clears out leftover carriage return
     getline(cin, userName); // Get user input for name
     cout << endl;
 
@@ -89,29 +89,22 @@ string IntroGetName() {
     return userName;
 }
 
-void LevelUpOrDown(int totalCorrect, int totalIncorrect) {
-
-    int currentRange = 0;
-    int mathLevel = 0;
-    string userName;
+void LevelUpOrDown(int &attempt, int &mathLevel) {
 
     // Leveling Up/Down based on attempts
-    if (totalCorrect == 3) { //Levels up if correct answers = 3
+    if (attempt == 3) { //Levels up if correct answers = 3
         mathLevel++;
-        totalCorrect = 0; //Resets totalCorrect and totalIncorrect
-        totalIncorrect = 0;
-        currentRange += LEVEL_RANGE_CHANGE; //Adds 10 to current range
+        attempt = 0;
         cout << "You are now on Level " << mathLevel << "!" << endl;
-        cout << "New range is 1 to " << currentRange << endl;
+        cout << "New range is 1 to " << (mathLevel * LEVEL_RANGE_CHANGE) << endl;
         cout << endl;
     }
-    else if (totalIncorrect >= 3 && mathLevel > 1) { //Levels down after 3 wrong attempts. Will not level down on first level
+    else if (attempt <= -3 && mathLevel > 1) { //Levels down after 3 wrong attempts. Will not level down on first level
         mathLevel--;
-        totalCorrect = 0;
-        totalIncorrect = 0;
-        currentRange -= LEVEL_RANGE_CHANGE; //Subtracts 10 from current range
+        attempt = 0;
+
         cout << "You are now on Level " << mathLevel << "!" << endl;
-        cout << "New range is 1 to " << currentRange << endl;
+        cout << "New range is 1 to " << (mathLevel * LEVEL_RANGE_CHANGE) << endl;
         cout << endl;
     }
 }
@@ -170,12 +163,11 @@ vector<int> GenerateQuestion(int mathLevel) {
             cout << "Contact RivJams or Haschm05 about the error" << endl;
             cout << "Program ended with a -1 error" << endl;
     }
-
     return {mathLevel, leftNum, mathSymbol, rightNum, correctAnswer};
 }
 
 // Function to ask a question and return the question's details
-bool AskUser(vector<int> &row) {
+bool AskUser(vector<int> &row, string userName) {
 
     int mathLevel = 0;
     int leftNum = 0;
@@ -183,7 +175,6 @@ bool AskUser(vector<int> &row) {
     int correctAnswer = 0;
     int userAnswer = 0;
     char mathSymbol = '?';
-    string userName = "unknown";
 
     mathLevel = row.at(0);
     leftNum = row.at(1);
@@ -195,7 +186,6 @@ bool AskUser(vector<int> &row) {
         cout << endl;
         cout << "[Level #" << mathLevel << "] " << userName << ", what does "
         << leftNum << " " << mathSymbol << " " << rightNum << " = ";
-
 
         // Loop until the user enters numeric data "From the assignment document"
         while (!(cin >> userAnswer)) {
@@ -220,7 +210,7 @@ bool AskUser(vector<int> &row) {
             cout << "You'll get 'em next time!" << endl;
             cout << "The correct answer was " << correctAnswer << "." << endl; //gives the user the right answer
             cout << endl;
-             row.push_back({0});
+            row.push_back({0});
         }
         else { //Else runs until user is out of attempts or until user gets the question correct
             cout << "That was incorrect. You have " << MAX_ATTEMPTS - i << " attempts left." << endl;
@@ -230,41 +220,42 @@ bool AskUser(vector<int> &row) {
     return false;
 }
 
-string AskContinue(string userYN) {
+string AskContinue() {
+
+    string userYN = "y";
 
     // clears input(fixes issue with interaction between leveling and continue)
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    cout << "Do you want to continue? (y = yes | n = no): ";
+    cin.clear();
+
+    cout << "Do you want to continue? (y = yes | n = no): " << endl;
     getline(cin, userYN);  // Use getline to avoid issues with leftover newline characters.
 
     // Convert the user's input to lowercase
     for (int i = 0; i < userYN.size(); i++) {
         userYN.at(i) = tolower(userYN.at(i));
     }
-
+    cout << userYN;
     // Check for valid inputs
     while (userYN != "y" && userYN != "yes" && userYN != "n" && userYN != "no") {
         cout << "Invalid input, please try again: ";
         getline(cin, userYN);  // Use getline again for consistent input handling.
     }
-
     return userYN;
 }
 
 // Function to print summary report
-void PrintSummary(const vector<vector<int>> &questions) {
+void PrintSummary(const vector<vector<int>> &questions, string userName) {
 
     int mathLevel = 0;
     int leftNum = 0;
     int rightNum = 0;
     int correctAnswer = 0;
     int attemptCount = 0;
-    int userAnswer = 0;
     int averageCorrect = 0;
     int totalQuestions = 0;
     char mathSymbol = '?';
-    string userName;
 
     int totalCorrect = 0; //Resets these values to 0
     int totalIncorrect = 0;
