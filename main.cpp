@@ -4,6 +4,9 @@ Programmers: Hayden Schmidt
 Date: 12/3/24 *Last updated version
 Github URL: https://github.com/Haschm05/MathTutorV6
 Description: A simple math tutor for elementary students. Allows user to save and load game.
+Code has been broken into several functions for easier testing. Displays a summary of questions when done.
+Levels the difficulty of questions based on how many questions the user gets right or wrong.
+Generates random problems. Has a user interface.
 */
 
 #include <iostream> // required for couts & cins
@@ -43,10 +46,11 @@ int main() {
     //IntroArt();
     //IntroPun();
 
-    //Same but matters for some things, troublshoot later
+    //gets username
     userName = IntroGetName();
 
-    //bool LoadGame(const string &filename, vector<int> &gameState, vector<vector<int>> &questions);
+    //Load game if user has a previous save
+    LoadGame(userName, questions);
 
 
     while (userYN == "y" || userYN == "yes") {

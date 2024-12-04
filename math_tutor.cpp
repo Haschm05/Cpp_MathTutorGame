@@ -4,6 +4,9 @@ Programmers: Hayden Schmidt
 Date: 12/3/24 *Last updated version
 Github URL: https://github.com/Haschm05/MathTutorV6
 Description: A simple math tutor for elementary students. Allows user to save and load game.
+Code has been broken into several functions for easier testing. Displays a summary of questions when done.
+Levels the difficulty of questions based on how many questions the user gets right or wrong.
+Generates random problems. Has a user interface.
 */
 #include <iostream> // required for couts & cins
 #include <cstdlib> // allows for randomizer
