@@ -31,6 +31,7 @@ int main() {
     int tempVal2 = 0;
     string userYN = "y";
     string question = "y";
+    string userName = "unknown";
 
     //vector
     vector<vector<int>> questions;
@@ -39,15 +40,13 @@ int main() {
     srand(time(0)); // Generates a unique seed so its random.
 
     //Intro parts, can be removed for testing
-    IntroArt();
-    IntroPun();
+    //IntroArt();
+    //IntroPun();
 
     //Same but matters for some things, troublshoot later
-    string userName = IntroGetName();
+    userName = IntroGetName();
 
-    //asks the user if they want to load their previous game if they have one
-    YNQuestion(question, userName);
-    bool LoadGame(const string &filename, vector<int> &gameState, vector<vector<int>> &questions);
+    //bool LoadGame(const string &filename, vector<int> &gameState, vector<vector<int>> &questions);
 
 
     while (userYN == "y" || userYN == "yes") {
@@ -78,13 +77,14 @@ int main() {
         questions.push_back(row); // Push the last vector<int> in row to questions
 
         //continues the while loop
-        userYN = AskContinue();
+        cout << userName + " Do you want to continue? (y = yes | n = no): ";
+        userYN = YNQuestion(question);
     }
     cin.clear();
     //Prints summary of questions
     PrintSummary(questions, userName);
 
-    void SaveGame(const string &filename, const vector<int> &gameState, const vector<vector<int>> &questions);
+    //void SaveGame(const string &filename, const vector<int> &gameState, const vector<vector<int>> &questions);
 
     return 0;
 }

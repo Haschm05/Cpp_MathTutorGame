@@ -71,7 +71,6 @@ void IntroPun() {
         cout << "That's too bad." << endl;
     }
     cout << endl;
-    cin.clear();
 }
 
 //Intro Get Name
@@ -222,23 +221,20 @@ bool AskUser(vector<int> &row, string userName) {
     return false;
 }
 
-string AskContinue() {
+string YNQuestion(string question) {
 
     string userYN = "y";
 
     // clears input(fixes issue with interaction between leveling and continue)
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    cin.clear();
-
-    cout << "Do you want to continue? (y = yes | n = no): " << endl;
     getline(cin, userYN);  // Use getline to avoid issues with leftover newline characters.
 
     // Convert the user's input to lowercase
     for (int i = 0; i < userYN.size(); i++) {
         userYN.at(i) = tolower(userYN.at(i));
     }
-    cout << userYN;
+
     // Check for valid inputs
     while (userYN != "y" && userYN != "yes" && userYN != "n" && userYN != "no") {
         cout << "Invalid input, please try again: ";
@@ -311,35 +307,9 @@ void PrintSummary(const vector<vector<int>> &questions, string userName) {
     cout << "MORE FUN!" << endl;
 }
 
-// Function to save the game state and questions to a file
-void SaveGame(const string &filename, const vector<int> &gameState, const vector<vector<int>> &questions) {
-
-    ofstream outFile(filename); // Open the file in write mode
-
-    if (outFile.is_open()) {
-
-        // Write the game state
-        outFile << gameState[0] << " " << gameState[1] << " " << gameState[2] << " " << gameState[3] << endl;
-
-        // Write the questions
-        for (const auto &question : questions) {
-            for (int i = 0; i < question.size(); i++) {
-                outFile << question[i] << " ";
-            }
-            outFile << endl;
-        }
-
-        outFile.close();     // Close the file after writing
-        cout << "File saved successfully!" << endl;
-    }
-    else {
-        cerr << "Error: Could not open file to save!" << endl;
-    }
-}
-
 // Function to load the game state and questions from a file
 bool LoadGame(const string &filename, vector<int> &gameState, vector<vector<int>> &questions) {
-
+/*
     ifstream inFile(filename); // Open the file in read mode
 
     if (inFile.is_open()) {
@@ -370,4 +340,23 @@ bool LoadGame(const string &filename, vector<int> &gameState, vector<vector<int>
         cerr << "Error: Could not open file to load!" << endl;
         return false; // Load failed
     }
+    */
+}
+
+// Function to save the game state and questions to a file
+void SaveGame() {
+
+    string userInput = "?";
+
+    //userInput =
+
+    ofstream outFS; //output file stream
+
+    //opens file
+    outFS.open(GAME_SAVE);
+    if (!outFS.is_open()) {
+        throw runtime_error("Unable to open " + GAME_SAVE + " file.");
+
+    }
+
 }
