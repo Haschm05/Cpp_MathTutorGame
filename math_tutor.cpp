@@ -346,52 +346,46 @@ void SaveGame(string userName, vector<vector<int>> &questions) {
 
 // Function to load the game state and questions from a file
 bool LoadGame(string userName, vector<vector<int>> &questions) {
-/*
+
     //Declares variables for vector
-    int mathLevel = 0;
+    int mathLevel = 1;
     int leftNum = 0;
     int rightNum = 0;
     int correctAnswer = 0;
-    int attemptCount = 0;
-    int averageCorrect = 0;
-    int totalQuestions = 0;
     char mathSymbol = '?';
 
     string userInput = "?";
     ifstream inFile(GAME_SAVE); // Open the file in read mode
 
-    //opens file
-    inFS.open(GAME_SAVE);
+    //opens file: FIX ME!!
+    inFile.open(GAME_SAVE);
 
-    if (inFile.is_open()) {
-
-        // Read the game state
-        int mathLevel = 0;
-        int currentRange = 0;
-        int correct = 0;
-        int incorrect = 0;
-
-        inFile >> mathLevel >> currentRange >> correct >> incorrect;
-        gameState = {mathLevel, currentRange, correct, incorrect};
-
-        // Read the questions
-        int numQuestions;
-        inFile >> numQuestions; // Read the number of questions
-        questions.clear(); // Clear any existing questions
-        for (int i = 0; i < numQuestions; i++) {
-            vector<int> question(6);
-            for (int j = 0; j < 6; j++) {
-                inFile >> question[j];
-            }
-            questions.push_back(question);
-        }
-        inFile.close(); // Close the file after reading
-        return true; // Load successful
-    } else {
-        cerr << "Error: Could not open file to load!" << endl;
+    //If no file exists the function ends and the user is sent back to main
+    if (!inFile.is_open()) {
         return false; // Load failed
     }
 
-}
-*/
+    if (inFile.is_open()) {
+        //Ascertains wether or not the user want to load their previous game
+        cout << "It looks like you've played before. " << endl;
+        cout << "Would you like to load you saved game? ";
+        userInput = YNQuestion();
+
+        if (userInput == "y" || userInput == "yes") {
+            cout << "Loading your previous save file. Please wait . . . " << endl;
+
+            //The actual loading of their previous game: FIX ME!!!
+            while (inFile >> mathLevel >> leftNum >> mathSymbol >> rightNum >> correctAnswer) {
+                //questions.push_back(mathLevel, leftNum, mathSymbol, rightNum, correctAnswer);
+            }
+            //else {
+                throw runtime_error("Unable to load " + GAME_SAVE + " file.");
+            }
+        }
+        inFile.close();
+        //Display a summary of how many questions were saved to the file based on the size of the 2D vector.
+
+    }
+//}
+
 
