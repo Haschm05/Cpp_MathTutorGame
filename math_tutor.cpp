@@ -314,36 +314,54 @@ void SaveGame(string userName, vector<vector<int>> &questions) {
     ofstream outFS; //output file stream
 
     //asks the user if they want to save their game
-    cout << userName + " do you want to save your game? (y=yes | n=no)";
+    cout << userName + " do you want to save your game? (y=yes | n=no) ";
     userInput = YNQuestion();
 
     if (userInput == "n" || userInput == "no") {
-
         cout << "Okay, Thanks for playing!" << endl;
         return;
     }
-    else if (userInput == "y" || userInput == "yes") {
 
-        cout << "saving game please wait . . . " << endl;
+    cout << "saving game please wait . . . " << endl;
 
-        //opens file
-        outFS.open(GAME_SAVE);
+    //opens file
+    outFS.open(GAME_SAVE);
 
-        if (!outFS.is_open()) {
-            throw runtime_error("Unable to open " + GAME_SAVE + " file.");
-        }
-
-        //Use a for loop to write the 2D Vector to the file. Don’t forget to add an endl.
-
-        outFS.close();
-        //display a summary of how many questions were saved to the file based on the size of the 2D vector.
+    if (!outFS.is_open()) {
+        throw runtime_error("Unable to open " + GAME_SAVE + " file.");
     }
+
+    //Use a for loop to write the 2D Vector to the file. Don’t forget to add an endl.
+    for (int i = 0; i < questions.size(); i++) {
+        outFS << questions.at(i).at(0) << " ";
+        outFS << questions.at(i).at(1) << " ";
+        outFS << questions.at(i).at(2) << " ";
+        outFS << questions.at(i).at(3) << " ";
+        outFS << questions.at(i).at(4) << endl;
+    }
+
+    outFS.close();
+    //display a summary of how many questions were saved to the file based on the size of the 2D vector.
 }
 
 // Function to load the game state and questions from a file
-bool LoadGame(const string &filename, vector<int> &gameState, vector<vector<int>> &questions) {
+bool LoadGame(string userName, vector<vector<int>> &questions) {
 /*
-    ifstream inFile(filename); // Open the file in read mode
+    //Declares variables for vector
+    int mathLevel = 0;
+    int leftNum = 0;
+    int rightNum = 0;
+    int correctAnswer = 0;
+    int attemptCount = 0;
+    int averageCorrect = 0;
+    int totalQuestions = 0;
+    char mathSymbol = '?';
+
+    string userInput = "?";
+    ifstream inFile(GAME_SAVE); // Open the file in read mode
+
+    //opens file
+    inFS.open(GAME_SAVE);
 
     if (inFile.is_open()) {
 
@@ -373,7 +391,7 @@ bool LoadGame(const string &filename, vector<int> &gameState, vector<vector<int>
         cerr << "Error: Could not open file to load!" << endl;
         return false; // Load failed
     }
-    */
-}
 
+}
+*/
 

@@ -85,10 +85,22 @@ int main() {
     //Prints summary of questions
     PrintSummary(questions, userName);
 
-    //SaveGame(userName,  questions);
-    //try catch
+    //Asks user is they want to save game and saves if yes and possible or exits if not
+    SaveGame(userName, questions);
+
+    //try catch for save
     try {
-        //GAME_SAVE(userName, questions);
+        //SaveGame(userName,  questions);
+    }
+    catch (runtime_error &e) {
+        //prints error message
+        cout << e.what() << endl;
+        cout << "Unable to save game." << endl;
+    }
+
+    //try catch for load
+    try {
+        //load game:(userName, questions);
     }
     catch (runtime_error &e) {
         //prints error message
