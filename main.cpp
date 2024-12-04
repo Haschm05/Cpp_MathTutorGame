@@ -78,11 +78,22 @@ int main() {
 
         //continues the while loop
         cout << userName + " Do you want to continue? (y = yes | n = no): ";
-        userYN = YNQuestion(question);
+        userYN = YNQuestion();
     }
     cin.clear();
+
     //Prints summary of questions
     PrintSummary(questions, userName);
+
+    //try catch
+    try {
+        //GAME_SAVE(userName, questions);
+    }
+    catch (runtime_error &e) {
+        //prints error message
+        cout << e.what() << endl;
+        cout << "Unable to save game." << endl;
+    }
 
     //void SaveGame(const string &filename, const vector<int> &gameState, const vector<vector<int>> &questions);
 

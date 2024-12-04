@@ -21,7 +21,7 @@ using namespace std;
 
 const int MAX_ATTEMPTS = 3;
 const int LEVEL_RANGE_CHANGE = 10;
-const string GAME_SAVE = "mathtutor.txt";
+extern const string GAME_SAVE = "mathtutor.txt";
 
 //Intro Art
 void IntroArt() {
@@ -221,7 +221,7 @@ bool AskUser(vector<int> &row, string userName) {
     return false;
 }
 
-string YNQuestion(string question) {
+string YNQuestion() {
 
     string userYN = "y";
 
@@ -307,6 +307,34 @@ void PrintSummary(const vector<vector<int>> &questions, string userName) {
     cout << "MORE FUN!" << endl;
 }
 
+// Function to save the game state and questions to a file
+void SaveGame(string userName, vector<vector<int>> &questions) {
+
+    string userInput = "?";
+
+    //asks the user if they want to save their game
+    cout << userName + " do you want to save your game? (y=yes | n=no)";
+    userInput = YNQuestion();
+
+    if (userInput == "n" || userInput == "no") {
+        cout << "Okay, Thanks for playing!" << endl;
+        return;
+    }
+
+    ofstream outFS; //output file stream
+
+    //opens file
+    outFS.open(GAME_SAVE);
+    if (!outFS.is_open()) {
+        throw runtime_error("Unable to open " + GAME_SAVE + " file.");
+
+    }
+
+    //for loop
+    outFS.close();
+
+}
+
 // Function to load the game state and questions from a file
 bool LoadGame(const string &filename, vector<int> &gameState, vector<vector<int>> &questions) {
 /*
@@ -343,20 +371,4 @@ bool LoadGame(const string &filename, vector<int> &gameState, vector<vector<int>
     */
 }
 
-// Function to save the game state and questions to a file
-void SaveGame() {
 
-    string userInput = "?";
-
-    //userInput =
-
-    ofstream outFS; //output file stream
-
-    //opens file
-    outFS.open(GAME_SAVE);
-    if (!outFS.is_open()) {
-        throw runtime_error("Unable to open " + GAME_SAVE + " file.");
-
-    }
-
-}
