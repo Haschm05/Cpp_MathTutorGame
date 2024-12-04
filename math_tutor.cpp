@@ -1,11 +1,10 @@
 /*
-Program: Math Tutor Version 5
+Program: Math Tutor Version 6
 Programmers: Hayden Schmidt
-Date: 11/19/24 *Last updated version
-Github URL: https://github.com/Haschm05/MathTutorV5
-Description: A simple math tutor for elementary students. Converts code to functions for easier testing and modification.
+Date: 12/3/24 *Last updated version
+Github URL: https://github.com/Haschm05/MathTutorV6
+Description: A simple math tutor for elementary students. Allows user to save and load game.
 */
-
 #include <iostream> // required for couts & cins
 #include <cstdlib> // allows for randomizer
 #include <string> // allows for strings to be used
@@ -13,6 +12,8 @@ Description: A simple math tutor for elementary students. Converts code to funct
 #include <cctype>
 #include <iomanip>
 #include <vector>
+#include <fstream>
+#include <stdexcept>
 
 #include "math_tutor.h" // includes header file
 
@@ -20,6 +21,7 @@ using namespace std;
 
 const int MAX_ATTEMPTS = 3;
 const int LEVEL_RANGE_CHANGE = 10;
+const string GAME_SAVE = "mathtutor.txt";
 
 //Intro Art
 void IntroArt() {
@@ -34,7 +36,7 @@ void IntroArt() {
     cout << "            __/ /                       " << endl;
     cout << "           |___/                       " << endl;
     cout << "*******************************************" << endl;
-    cout << "*    Welcome to Silly Math Tutor V5 by    *" << endl;
+    cout << "*    Welcome to Silly Math Tutor V6 by    *" << endl;
     cout << "*                  Hayden                 *" << endl;
     cout << "*******************************************" << endl;
     cout << endl;
@@ -307,4 +309,65 @@ void PrintSummary(const vector<vector<int>> &questions, string userName) {
     cout << "Be sure to come back in the near future" << endl;
     cout << "for more updates, and most importantly," << endl; // promises future improvements, the next being Version 3
     cout << "MORE FUN!" << endl;
+}
+
+// Function to save the game state and questions to a file
+void SaveGame(const string &filename, const vector<int> &gameState, const vector<vector<int>> &questions) {
+
+    ofstream outFile(filename); // Open the file in write mode
+
+    if (outFile.is_open()) {
+
+        // Write the game state
+        outFile << gameState[0] << " " << gameState[1] << " " << gameState[2] << " " << gameState[3] << endl;
+
+        // Write the questions
+        for (const auto &question : questions) {
+            for (int i = 0; i < question.size(); i++) {
+                outFile << question[i] << " ";
+            }
+            outFile << endl;
+        }
+
+        outFile.close();     // Close the file after writing
+        cout << "File saved successfully!" << endl;
+    }
+    else {
+        cerr << "Error: Could not open file to save!" << endl;
+    }
+}
+
+// Function to load the game state and questions from a file
+bool LoadGame(const string &filename, vector<int> &gameState, vector<vector<int>> &questions) {
+
+    ifstream inFile(filename); // Open the file in read mode
+
+    if (inFile.is_open()) {
+
+        // Read the game state
+        int mathLevel = 0;
+        int currentRange = 0;
+        int correct = 0;
+        int incorrect = 0;
+
+        inFile >> mathLevel >> currentRange >> correct >> incorrect;
+        gameState = {mathLevel, currentRange, correct, incorrect};
+
+        // Read the questions
+        int numQuestions;
+        inFile >> numQuestions; // Read the number of questions
+        questions.clear(); // Clear any existing questions
+        for (int i = 0; i < numQuestions; i++) {
+            vector<int> question(6);
+            for (int j = 0; j < 6; j++) {
+                inFile >> question[j];
+            }
+            questions.push_back(question);
+        }
+        inFile.close(); // Close the file after reading
+        return true; // Load successful
+    } else {
+        cerr << "Error: Could not open file to load!" << endl;
+        return false; // Load failed
+    }
 }

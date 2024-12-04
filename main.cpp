@@ -1,9 +1,9 @@
 /*
-Program: Math Tutor Version 3
+Program: Math Tutor Version 6
 Programmers: Hayden Schmidt
-Date: 11/19/24 *Last updated version
-Github URL: https://github.com/Haschm05/MathTutorV5
-Description: A simple math tutor for elementary students. Converts code to functions for easier testing and modification.
+Date: 12/3/24 *Last updated version
+Github URL: https://github.com/Haschm05/MathTutorV6
+Description: A simple math tutor for elementary students. Allows user to save and load game.
 */
 
 #include <iostream> // required for couts & cins
@@ -13,6 +13,8 @@ Description: A simple math tutor for elementary students. Converts code to funct
 #include <cctype>
 #include <iomanip>
 #include <vector>
+#include <fstream>
+#include <stdexcept>
 
 #include "math_tutor.h" // includes header file
 
@@ -28,6 +30,7 @@ int main() {
     int tempVal1 = 0;
     int tempVal2 = 0;
     string userYN = "y";
+    string question = "y";
 
     //vector
     vector<vector<int>> questions;
@@ -36,11 +39,16 @@ int main() {
     srand(time(0)); // Generates a unique seed so its random.
 
     //Intro parts, can be removed for testing
-    //IntroArt();
-    //IntroPun();
+    IntroArt();
+    IntroPun();
 
     //Same but matters for some things, troublshoot later
     string userName = IntroGetName();
+
+    //asks the user if they want to load their previous game if they have one
+    YNQuestion(question, userName);
+    bool LoadGame(const string &filename, vector<int> &gameState, vector<vector<int>> &questions);
+
 
     while (userYN == "y" || userYN == "yes") {
         //Loop goes until userYN no longer equals "yes")
@@ -75,6 +83,8 @@ int main() {
     cin.clear();
     //Prints summary of questions
     PrintSummary(questions, userName);
+
+    void SaveGame(const string &filename, const vector<int> &gameState, const vector<vector<int>> &questions);
 
     return 0;
 }

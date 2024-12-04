@@ -1,9 +1,9 @@
 /*
-Program: Math Tutor Version 5
+Program: Math Tutor Version 6
 Programmers: Hayden Schmidt
-Date: 11/19/24 *Last updated version
-GitHub URL: https://github.com/Haschm05/MathTutorV5
-Description: A simple math tutor for elementary students. Converts code to functions for easier testing and modification.
+Date: 12/3/24 *Last updated version
+Github URL: https://github.com/Haschm05/MathTutorV6
+Description: A simple math tutor for elementary students. Allows user to save and load game.
 */
 
 #ifndef MATH_TUTOR_H
@@ -23,6 +23,9 @@ vector<int> GenerateQuestion(int mathLevel);
 bool AskUser(vector<int> &row, string userName);
 string AskContinue();
 void PrintSummary(const vector<vector<int>> &questions, string userName);
+string YNQuestion(string question, string userName);
+void SaveGame(const string &filename, const vector<int> &gameState, const vector<vector<int>> &questions);
+bool LoadGame(const string &filename, vector<int> &gameState, vector<vector<int>> &questions);
 
 
 #endif //MATH_TUTOR_H
