@@ -85,6 +85,7 @@ int main() {
     //Prints summary of questions
     PrintSummary(questions, userName);
 
+    //SaveGame(userName,  questions);
     //try catch
     try {
         //GAME_SAVE(userName, questions);
@@ -94,8 +95,6 @@ int main() {
         cout << e.what() << endl;
         cout << "Unable to save game." << endl;
     }
-
-    //void SaveGame(const string &filename, const vector<int> &gameState, const vector<vector<int>> &questions);
 
     return 0;
 }

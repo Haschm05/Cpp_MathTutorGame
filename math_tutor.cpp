@@ -311,28 +311,33 @@ void PrintSummary(const vector<vector<int>> &questions, string userName) {
 void SaveGame(string userName, vector<vector<int>> &questions) {
 
     string userInput = "?";
+    ofstream outFS; //output file stream
 
     //asks the user if they want to save their game
     cout << userName + " do you want to save your game? (y=yes | n=no)";
     userInput = YNQuestion();
 
     if (userInput == "n" || userInput == "no") {
+
         cout << "Okay, Thanks for playing!" << endl;
         return;
     }
+    else if (userInput == "y" || userInput == "yes") {
 
-    ofstream outFS; //output file stream
+        cout << "saving game please wait . . . " << endl;
 
-    //opens file
-    outFS.open(GAME_SAVE);
-    if (!outFS.is_open()) {
-        throw runtime_error("Unable to open " + GAME_SAVE + " file.");
+        //opens file
+        outFS.open(GAME_SAVE);
 
+        if (!outFS.is_open()) {
+            throw runtime_error("Unable to open " + GAME_SAVE + " file.");
+        }
+
+        //Use a for loop to write the 2D Vector to the file. Don’t forget to add an endl.
+
+        outFS.close();
+        //display a summary of how many questions were saved to the file based on the size of the 2D vector.
     }
-
-    //for loop
-    outFS.close();
-
 }
 
 // Function to load the game state and questions from a file

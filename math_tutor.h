@@ -23,7 +23,7 @@ vector<int> GenerateQuestion(int mathLevel);
 bool AskUser(vector<int> &row, string userName);
 void PrintSummary(const vector<vector<int>> &questions, string userName);
 string YNQuestion();
-//void SaveGame(const string &filename, const vector<int> &gameState, const vector<vector<int>> &questions);
+void SaveGame(string userName, vector<vector<int>> &questions);
 //bool LoadGame(const string &filename, vector<int> &gameState, vector<vector<int>> &questions);
 
 
