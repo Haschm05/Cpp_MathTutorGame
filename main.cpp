@@ -57,7 +57,7 @@ int main() {
     //Load game if user has a previous save
     //try catch for load
     try {
-        LoadGame(userName, questions);
+        mathLevel = LoadGame(userName, questions);
     }
     catch (runtime_error &e) {
         //prints error message

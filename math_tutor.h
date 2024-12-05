@@ -27,7 +27,7 @@ bool AskUser(vector<int> &row, string userName);
 void PrintSummary(const vector<vector<int>> &questions, string userName);
 string YNQuestion();
 void SaveGame(string userName, vector<vector<int>> &questions);
-bool LoadGame(string userName, vector<vector<int>> &questions);
+int LoadGame(string userName, vector<vector<int>> &questions);
 
 
 #endif //MATH_TUTOR_H

@@ -337,16 +337,19 @@ void SaveGame(string userName, vector<vector<int>> &questions) {
         outFS << questions.at(i).at(1) << " ";
         outFS << questions.at(i).at(2) << " ";
         outFS << questions.at(i).at(3) << " ";
-        outFS << questions.at(i).at(4) << endl;
+        outFS << questions.at(i).at(4) << " ";
+        outFS << questions.at(i).at(5) << endl;
     }
 
     outFS.close();
 
     //display a summary of how many questions were saved to the file based on the size of the 2D vector.
+    cout << questions.size() << " questions saved to mathtutor.txt" << endl;
+    cout << "Game saved successfully" << endl;
 }
 
 // Function to load the game state and questions from a file
-bool LoadGame(string userName, vector<vector<int>> &questions) {
+int LoadGame(string userName, vector<vector<int>> &questions) {
 
     //Declares variables for vector
     int mathLevel = 1;
@@ -354,56 +357,43 @@ bool LoadGame(string userName, vector<vector<int>> &questions) {
     int rightNum = 0;
     int correctAnswer = 0;
     int mathSymbol = '?';
+    int attempts = 0;
 
     string userInput = "?";
-    ifstream outFile; // Open the file in read mode
+    ifstream inFile; // Open the file in read mode
+
+    cout << "Loading your previous save file. Please wait . . . " << endl;
+
+    //opens file
+    inFile.open(GAME_SAVE);
+
+    //If no file exists the function ends and the user is sent back to main
+    if (!inFile.is_open()) {
+        cout << "Looks like you haven't played before. Have fun!" << endl;
+        cout << endl;
+        return mathLevel;
+    }
 
     //Ascertains wether or not the user want to load their previous game
     cout << userName << ", it looks like you've played before. " << endl;
     cout << "Would you like to load you saved game? (y=yes | n=no) ";
     userInput = YNQuestion();
 
-
     if (userInput == "n" || userInput == "no") {
-        return false;
+        cout << "Load game cancelled " << endl;
+        cout << endl;
+        return mathLevel;
     }
 
-    cout << "Loading your previous save file. Please wait . . . " << endl;
-
-    //opens file: FIX ME!!
-    outFile.open(GAME_SAVE);
-
-    //If no file exists the function ends and the user is sent back to main
-    if (!outFile.is_open()) {
-        throw runtime_error("Unable to load " + GAME_SAVE + " file.");
-    }
     //The actual loading of their previous game: FIX ME!!!
-    while (outFile >> mathLevel >> leftNum >> mathSymbol >> rightNum >> correctAnswer) {
-        questions.push_back({mathLevel, leftNum, mathSymbol, rightNum, correctAnswer});
+    while (inFile >> mathLevel >> leftNum >> mathSymbol >> rightNum >> correctAnswer >> attempts) {
+        questions.push_back({mathLevel, leftNum, mathSymbol, rightNum, correctAnswer, attempts});
     }
 
-    outFile.close();
-    //Display a summary of how many questions were saved to the file based on the size of the 2D vector.
-    for (int i = 0; i < questions.size(); i++) {
-        mathLevel = questions.at(i).at(0);
-        leftNum = questions.at(i).at(1);
-        mathSymbol = static_cast<char>(questions.at(i).at(2)); // Change to MathType
-        rightNum = questions.at(i).at(3);
-        correctAnswer = questions.at(i).at(4);
+    inFile.close();
 
-        // Outputting the math problem stored in the vector
-        cout << setw(9) << right << leftNum << " ";
-        if (mathSymbol == 43) {
-            cout << "+ ";
-        }
-        else if (mathSymbol == 45) {
-            cout << "- ";
-        }
-        else if (mathSymbol == 47) {
-            cout << "/ ";
-        }
-        cout << setw(2) << left << rightNum << setw(2) << right << " = "
-             << setw(2) << left << correctAnswer << endl;
-    }
+    // display vector size load game : FIX ME!!!
+    cout << questions.size() << " questions loaded from mathtutor.txt" << endl;
+    cout << "previous game loaded successfully" << endl;
     return mathLevel;
 }
