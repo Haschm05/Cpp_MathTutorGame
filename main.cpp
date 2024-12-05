@@ -9,6 +9,10 @@ Levels the difficulty of questions based on how many questions the user gets rig
 Generates random problems. Has a user interface.
 */
 
+//Possible future Ideas: mutiple saves for different people based on userName
+//more problem variation, sqrt etc.
+
+
 #include <iostream> // required for couts & cins
 #include <cstdlib> // allows for randomizer
 #include <ctime> // enables use of time function
@@ -17,6 +21,7 @@ Generates random problems. Has a user interface.
 #include <iomanip>
 #include <vector>
 #include <fstream>
+#include <limits>
 #include <stdexcept>
 
 #include "math_tutor.h" // includes header file
@@ -52,10 +57,14 @@ int main() {
     //Load game if user has a previous save
     LoadGame(userName, questions);
 
+    userYN = "y";
 
     while (userYN == "y" || userYN == "yes") {
         //Loop goes until userYN no longer equals "yes")
         //Beginning of central loop that repeats number generation and math problems
+
+        // clears input(fixes issue with interaction between leveling and continue)
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
         //levels up or down based on answers
         LevelUpOrDown(attempt, mathLevel);
@@ -80,21 +89,21 @@ int main() {
         // Modify the original questions vector by adding the row
         questions.push_back(row); // Push the last vector<int> in row to questions
 
+        // clears input(fixes issue with interaction between continue and continue)
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
         //continues the while loop
         cout << userName + " Do you want to continue? (y = yes | n = no): ";
         userYN = YNQuestion();
     }
-    cin.clear();
 
     //Prints summary of questions
     PrintSummary(questions, userName);
 
     //Asks user is they want to save game and saves if yes and possible or exits if not
-    SaveGame(userName, questions);
-
     //try catch for save
     try {
-        //SaveGame(userName,  questions);
+        SaveGame(userName,  questions);
     }
     catch (runtime_error &e) {
         //prints error message
@@ -104,7 +113,7 @@ int main() {
 
     //try catch for load
     try {
-        //load game:(userName, questions);
+        LoadGame:(userName, questions);
     }
     catch (runtime_error &e) {
         //prints error message

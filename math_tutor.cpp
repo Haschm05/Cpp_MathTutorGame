@@ -224,28 +224,6 @@ bool AskUser(vector<int> &row, string userName) {
     return false;
 }
 
-string YNQuestion() {
-
-    string userYN = "y";
-
-    // clears input(fixes issue with interaction between leveling and continue)
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-    getline(cin, userYN);  // Use getline to avoid issues with leftover newline characters.
-
-    // Convert the user's input to lowercase
-    for (int i = 0; i < userYN.size(); i++) {
-        userYN.at(i) = tolower(userYN.at(i));
-    }
-
-    // Check for valid inputs
-    while (userYN != "y" && userYN != "yes" && userYN != "n" && userYN != "no") {
-        cout << "Invalid input, please try again: ";
-        getline(cin, userYN);  // Use getline again for consistent input handling.
-    }
-    return userYN;
-}
-
 // Function to print summary report
 void PrintSummary(const vector<vector<int>> &questions, string userName) {
 
@@ -310,17 +288,36 @@ void PrintSummary(const vector<vector<int>> &questions, string userName) {
     cout << "MORE FUN!" << endl;
 }
 
+string YNQuestion() {
+
+    string userYN = "y";
+
+    getline(cin, userYN);  // Use getline to avoid issues with leftover newline characters.
+
+    // Convert the user's input to lowercase
+    for (int i = 0; i < userYN.size(); i++) {
+        userYN.at(i) = tolower(userYN.at(i));
+    }
+
+    // Check for valid inputs
+    while (!(userYN == "y" || userYN == "yes" || userYN == "n" || userYN == "no")) {
+        cout << "Invalid input, please try again: ";
+        getline(cin, userYN);  // Use getline again for consistent input handling.
+    }
+    return userYN;
+}
+
 // Function to save the game state and questions to a file
 void SaveGame(string userName, vector<vector<int>> &questions) {
 
-    string userInput = "?";
+    string userYN = "?";
     ofstream outFS; //output file stream
 
     //asks the user if they want to save their game
     cout << userName + " do you want to save your game? (y=yes | n=no) ";
-    userInput = YNQuestion();
+    userYN = YNQuestion();
 
-    if (userInput == "n" || userInput == "no") {
+    if (userYN == "n" || userYN == "no") {
         cout << "Okay, Thanks for playing!" << endl;
         return;
     }
@@ -355,40 +352,36 @@ bool LoadGame(string userName, vector<vector<int>> &questions) {
     int leftNum = 0;
     int rightNum = 0;
     int correctAnswer = 0;
-    char mathSymbol = '?';
+    int mathSymbol = '?';
 
     string userInput = "?";
-    ifstream inFile(GAME_SAVE); // Open the file in read mode
+    ifstream inFile; // Open the file in read mode
+
+    //Ascertains wether or not the user want to load their previous game
+    cout << userName << ", it looks like you've played before. " << endl;
+    cout << "Would you like to load you saved game? (y=yes | n=no) ";
+    userInput = YNQuestion();
+
+
+    if (userInput == "n" || userInput == "no") {
+        return false;
+    }
+
+    cout << "Loading your previous save file. Please wait . . . " << endl;
 
     //opens file: FIX ME!!
     inFile.open(GAME_SAVE);
 
     //If no file exists the function ends and the user is sent back to main
     if (!inFile.is_open()) {
-        return false; // Load failed
+        throw runtime_error("Unable to load " + GAME_SAVE + " file.");
+    }
+    //The actual loading of their previous game: FIX ME!!!
+    while (inFile >> mathLevel >> leftNum >> mathSymbol >> rightNum >> correctAnswer) {
+        questions.push_back({mathLevel, leftNum, mathSymbol, rightNum, correctAnswer});
     }
 
-    if (inFile.is_open()) {
-        //Ascertains wether or not the user want to load their previous game
-        cout << "It looks like you've played before. " << endl;
-        cout << "Would you like to load you saved game? ";
-        userInput = YNQuestion();
 
-        if (userInput == "y" || userInput == "yes") {
-            cout << "Loading your previous save file. Please wait . . . " << endl;
-
-            //The actual loading of their previous game: FIX ME!!!
-            while (inFile >> mathLevel >> leftNum >> mathSymbol >> rightNum >> correctAnswer) {
-                //questions.push_back(mathLevel, leftNum, mathSymbol, rightNum, correctAnswer);
-            }
-            //else {
-                throw runtime_error("Unable to load " + GAME_SAVE + " file.");
-            }
-        }
-        inFile.close();
-        //Display a summary of how many questions were saved to the file based on the size of the 2D vector.
-
-    }
-//}
-
-
+    inFile.close();
+    //Display a summary of how many questions were saved to the file based on the size of the 2D vector.
+}
