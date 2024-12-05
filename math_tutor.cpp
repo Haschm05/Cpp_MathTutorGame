@@ -80,6 +80,9 @@ void IntroPun() {
 string IntroGetName() {
     string userName = "unknown";
 
+    // clears input(fixes issue with interactions)
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
     // Beginning the interactive portion of the program
     cout << "Please enter your name to begin: ";
     getline(cin, userName); // Get user input for name

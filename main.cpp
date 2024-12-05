@@ -48,8 +48,8 @@ int main() {
     srand(time(0)); // Generates a unique seed so its random.
 
     //Intro parts, can be removed for testing
-    //IntroArt();
-    //IntroPun();
+    IntroArt();
+    IntroPun();
 
     //gets username
     userName = IntroGetName();
@@ -71,7 +71,7 @@ int main() {
         //Loop goes until userYN no longer equals "yes")
         //Beginning of central loop that repeats number generation and math problems
 
-        // clears input(fixes issue with interaction between leveling and continue)
+        // clears input(fixes issue with interactions)
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
         //levels up or down based on answers
@@ -97,7 +97,7 @@ int main() {
         // Modify the original questions vector by adding the row
         questions.push_back(row); // Push the last vector<int> in row to questions
 
-        // clears input(fixes issue with interaction between continue and continue)
+        // clears input(fixes issue with interactions)
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
         //continues the while loop
