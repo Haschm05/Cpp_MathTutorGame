@@ -24,7 +24,7 @@ using namespace std;
 
 const int MAX_ATTEMPTS = 3;
 const int LEVEL_RANGE_CHANGE = 10;
-extern const string GAME_SAVE = "mathtutor.txt";
+extern const string GAME_SAVE = "Saved.txt";
 
 //Intro Art
 void IntroArt() {
