@@ -55,7 +55,15 @@ int main() {
     userName = IntroGetName();
 
     //Load game if user has a previous save
-    LoadGame(userName, questions);
+    //try catch for load
+    try {
+        LoadGame(userName, questions);
+    }
+    catch (runtime_error &e) {
+        //prints error message
+        cout << e.what() << endl;
+        cout << "Unable to save game." << endl;
+    }
 
     userYN = "y";
 
@@ -104,16 +112,6 @@ int main() {
     //try catch for save
     try {
         SaveGame(userName,  questions);
-    }
-    catch (runtime_error &e) {
-        //prints error message
-        cout << e.what() << endl;
-        cout << "Unable to save game." << endl;
-    }
-
-    //try catch for load
-    try {
-        LoadGame:(userName, questions);
     }
     catch (runtime_error &e) {
         //prints error message
