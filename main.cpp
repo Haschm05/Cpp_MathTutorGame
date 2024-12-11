@@ -12,7 +12,6 @@ Generates random problems. Has a user interface.
 //Possible future Ideas: mutiple saves for different people based on userName
 //more problem variation, sqrt etc.
 
-
 #include <iostream> // required for couts & cins
 #include <cstdlib> // allows for randomizer
 #include <ctime> // enables use of time function
@@ -30,7 +29,7 @@ using namespace std; // sets standard namespace
 
 int main() {
 
-    //sets totals to 0
+    //declares and sets totals to 0
     int totalCorrect = 0;
     int totalIncorrect = 0;
     int mathLevel = 1;

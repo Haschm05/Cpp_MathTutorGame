@@ -8,6 +8,7 @@ Code has been broken into several functions for easier testing. Displays a summa
 Levels the difficulty of questions based on how many questions the user gets right or wrong.
 Generates random problems. Has a user interface.
 */
+
 #include <iostream> // required for couts & cins
 #include <cstdlib> // allows for randomizer
 #include <string> // allows for strings to be used
@@ -22,12 +23,16 @@ Generates random problems. Has a user interface.
 
 using namespace std;
 
+//constants
 const int MAX_ATTEMPTS = 3;
 const int LEVEL_RANGE_CHANGE = 10;
+
+//External save file
 extern const string GAME_SAVE = "Saved.txt";
 
 //Intro Art
 void IntroArt() {
+
     // Set of cout statements to display the Silly Math ASCII art and welcome banner
     cout << "*******************************************" << endl;
     cout << " _____ _ _ _      ___  ___      _   _    " << endl;
@@ -47,7 +52,10 @@ void IntroArt() {
 
 //Intro Pun
 void IntroPun() {
+
+    //variable
     string userYN;
+
     // Asks prompt whether to display the jokes or not
     cout << "Do you wanna hear some math puns? (y/n): ";
     cin >> userYN;
@@ -78,6 +86,8 @@ void IntroPun() {
 
 //Intro Get Name
 string IntroGetName() {
+
+    //variable
     string userName = "unknown";
 
     // clears input(fixes issue with interactions)
@@ -118,6 +128,8 @@ void LevelUpOrDown(int &attempt, int &mathLevel) {
 
 // Function to generate a math question
 vector<int> GenerateQuestion(int mathLevel) {
+
+    //variables
     int leftNum = 0;
     int rightNum = 0;
     char mathSymbol = '?';
@@ -144,7 +156,7 @@ vector<int> GenerateQuestion(int mathLevel) {
 
         case MT_SUB:
             mathSymbol = '-'; //assigns a subtraction problem
-        // This is used to make sure the left number is larger than the right, preventing negative numbers.
+            // This is used to make sure the left number is larger than the right, preventing negative numbers.
             if (leftNum < rightNum) {
                 temp = leftNum;
                 leftNum = rightNum;
@@ -160,7 +172,7 @@ vector<int> GenerateQuestion(int mathLevel) {
 
         case MT_DIV:
             mathSymbol = '/'; //assigns a division problem
-        // Following code makes sure division problem doesn't generate a fraction
+            // Following code makes sure division problem doesn't generate a fraction
             correctAnswer = leftNum;
             leftNum *= rightNum;
             break;
@@ -170,12 +182,14 @@ vector<int> GenerateQuestion(int mathLevel) {
             cout << "Contact RivJams or Haschm05 about the error" << endl;
             cout << "Program ended with a -1 error" << endl;
     }
+
     return {mathLevel, leftNum, mathSymbol, rightNum, correctAnswer};
 }
 
 // Function to ask a question and return the question's details
 bool AskUser(vector<int> &row, string userName) {
 
+    //variables
     int mathLevel = 0;
     int leftNum = 0;
     int rightNum = 0;
@@ -212,7 +226,7 @@ bool AskUser(vector<int> &row, string userName) {
             cout << endl;
             return true;
         }
-        else if (i == MAX_ATTEMPTS) { //Displays when incorrect
+        if (i == MAX_ATTEMPTS) { //Displays when incorrect
             cout << "Oops!" << endl;
             cout << "You'll get 'em next time!" << endl;
             cout << "The correct answer was " << correctAnswer << "." << endl; //gives the user the right answer
@@ -230,6 +244,7 @@ bool AskUser(vector<int> &row, string userName) {
 // Function to print summary report
 void PrintSummary(const vector<vector<int>> &questions, string userName) {
 
+    //variables
     int mathLevel = 0;
     int leftNum = 0;
     int rightNum = 0;
@@ -293,7 +308,11 @@ void PrintSummary(const vector<vector<int>> &questions, string userName) {
 
 string YNQuestion() {
 
+    //variables
     string userYN = "y";
+
+    //flushes the input stream
+    cout << flush;
 
     getline(cin, userYN);  // Use getline to avoid issues with leftover newline characters.
 
@@ -313,6 +332,7 @@ string YNQuestion() {
 // Function to save the game state and questions to a file
 void SaveGame(string userName, vector<vector<int>> &questions) {
 
+    //variables
     string userYN = "?";
     ofstream outFS; //output file stream
 
@@ -330,6 +350,7 @@ void SaveGame(string userName, vector<vector<int>> &questions) {
     //opens file
     outFS.open(GAME_SAVE);
 
+    //error handling
     if (!outFS.is_open()) {
         throw runtime_error("Unable to open " + GAME_SAVE + " file.");
     }
@@ -344,6 +365,7 @@ void SaveGame(string userName, vector<vector<int>> &questions) {
         outFS << questions.at(i).at(5) << endl;
     }
 
+    //close file
     outFS.close();
 
     //display a summary of how many questions were saved to the file based on the size of the 2D vector.
@@ -382,6 +404,7 @@ int LoadGame(string userName, vector<vector<int>> &questions) {
     cout << "Would you like to load you saved game? (y=yes | n=no) ";
     userInput = YNQuestion();
 
+    //Does not load save if the user responds no
     if (userInput == "n" || userInput == "no") {
         cout << "Load game cancelled " << endl;
         cout << endl;
@@ -393,6 +416,7 @@ int LoadGame(string userName, vector<vector<int>> &questions) {
         questions.push_back({mathLevel, leftNum, mathSymbol, rightNum, correctAnswer, attempts});
     }
 
+    //close file
     inFile.close();
 
     // display vector size load game : FIX ME!!!
