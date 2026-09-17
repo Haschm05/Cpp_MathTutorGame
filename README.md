@@ -5,7 +5,7 @@
 ## Project Overview
 
 The **Math Tutor Program** is a C++ based game developed as a final project for Programming Fundementals 1.  
-It generates random math questions that you as the player will answer.
+It generates random math questions that you as the player will answer. (My First Project!)
 
 ---
 
