@@ -29,7 +29,8 @@ It generates random math questions that you as the player will answer.
 ---
 
 ## Running
-<img width="897" height="786" alt="output" src="https://github.com/user-attachments/assets/024bb611-f592-4582-a51f-1b45a9392394" />
+<img width="376" height="545" alt="image" src="https://github.com/user-attachments/assets/c54064fb-671e-4610-82fc-0fbe1a21945f" />
+
 
 ---
 
